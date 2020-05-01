@@ -1,0 +1,85 @@
+{
+    "CallerReference": "static-webfiles-2015-12-21", 
+    "Aliases": {
+        "Quantity": 0
+    },
+    "DefaultRootObject": "", 
+    "Origins": {
+        "Quantity": 1,
+        "Items": [
+            {
+                "OriginPath": "", 
+                "S3OriginConfig": {
+                    "OriginAccessIdentity": ""
+                }, 
+                "Id": "S3-[[YOUR-BUKCET-NAME]]", 
+                "DomainName": "[[YOUR-BUKCET-NAME]].s3.amazonaws.com"
+            }
+        ]
+    }, 
+    "DefaultCacheBehavior": {
+        "TrustedSigners": {
+            "Enabled": false, 
+            "Quantity": 0
+        }, 
+        "TargetOriginId": "S3-[[YOUR-BUKCET-NAME]]", 
+        "ViewerProtocolPolicy": "allow-all", 
+        "ForwardedValues": {
+            "Headers": {
+                "Items": [
+                    "Access-Control-Request-Headers", 
+                    "Origin"
+                ], 
+                "Quantity": 2
+            }, 
+            "Cookies": {
+                "Forward": "none"
+            }, 
+            "QueryString": true
+        }, 
+        "MaxTTL": 31536000, 
+        "SmoothStreaming": false, 
+        "DefaultTTL": 86400, 
+        "AllowedMethods": {
+            "Items": [
+                "HEAD", 
+                "GET"
+            ], 
+            "CachedMethods": {
+                "Items": [
+                    "HEAD", 
+                    "GET"
+                ], 
+                "Quantity": 2
+            }, 
+            "Quantity": 2
+        }, 
+        "MinTTL": 0
+    }, 
+    "CacheBehaviors": {
+        "Quantity": 0
+    }, 
+    "Comment": "", 
+    "Logging": {
+        "Bucket": "", 
+        "Prefix": "", 
+        "Enabled": false, 
+        "IncludeCookies": false
+    }, 
+    "WebACLId": "", 
+    "PriceClass": "PriceClass_All", 
+    "Enabled": true, 
+    "ViewerCertificate": {
+        "CloudFrontDefaultCertificate": true, 
+        "MinimumProtocolVersion": "SSLv3"
+    }, 
+    "CustomErrorResponses": {
+        "Quantity": 0
+    }, 
+    "Restrictions": {
+        "GeoRestriction": {
+            "RestrictionType": "none", 
+            "Quantity": 0
+        }
+    }
+}
