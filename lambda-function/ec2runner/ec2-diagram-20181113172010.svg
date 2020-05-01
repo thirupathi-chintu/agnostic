@@ -1,0 +1,350 @@
+<svg id="mermaid-1542147319250" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width: 417.453125px;" viewBox="0 0 417.453125 505"><style>
+
+
+#mermaid-1542147319250 .label {
+  font-family: 'trebuchet ms', verdana, arial;
+  color: #333; }
+
+#mermaid-1542147319250 .node rect,
+#mermaid-1542147319250 .node circle,
+#mermaid-1542147319250 .node ellipse,
+#mermaid-1542147319250 .node polygon {
+  fill: #ECECFF;
+  stroke: #9370DB;
+  stroke-width: 1px; }
+
+#mermaid-1542147319250 .node.clickable {
+  cursor: pointer; }
+
+#mermaid-1542147319250 .arrowheadPath {
+  fill: #333333; }
+
+#mermaid-1542147319250 .edgePath .path {
+  stroke: #333333;
+  stroke-width: 1.5px; }
+
+#mermaid-1542147319250 .edgeLabel {
+  background-color: #e8e8e8; }
+
+#mermaid-1542147319250 .cluster rect {
+  fill: #ffffde !important;
+  stroke: #aaaa33 !important;
+  stroke-width: 1px !important; }
+
+#mermaid-1542147319250 .cluster text {
+  fill: #333; }
+
+#mermaid-1542147319250 div.mermaidTooltip {
+  position: absolute;
+  text-align: center;
+  max-width: 200px;
+  padding: 2px;
+  font-family: 'trebuchet ms', verdana, arial;
+  font-size: 12px;
+  background: #ffffde;
+  border: 1px solid #aaaa33;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 100; }
+
+#mermaid-1542147319250 .actor {
+  stroke: #CCCCFF;
+  fill: #ECECFF; }
+
+#mermaid-1542147319250 text.actor {
+  fill: black;
+  stroke: none; }
+
+#mermaid-1542147319250 .actor-line {
+  stroke: grey; }
+
+#mermaid-1542147319250 .messageLine0 {
+  stroke-width: 1.5;
+  stroke-dasharray: '2 2';
+  marker-end: 'url(#arrowhead)';
+  stroke: #333; }
+
+#mermaid-1542147319250 .messageLine1 {
+  stroke-width: 1.5;
+  stroke-dasharray: '2 2';
+  stroke: #333; }
+
+#mermaid-1542147319250 #arrowhead {
+  fill: #333; }
+
+#mermaid-1542147319250 #crosshead path {
+  fill: #333 !important;
+  stroke: #333 !important; }
+
+#mermaid-1542147319250 .messageText {
+  fill: #333;
+  stroke: none; }
+
+#mermaid-1542147319250 .labelBox {
+  stroke: #CCCCFF;
+  fill: #ECECFF; }
+
+#mermaid-1542147319250 .labelText {
+  fill: black;
+  stroke: none; }
+
+#mermaid-1542147319250 .loopText {
+  fill: black;
+  stroke: none; }
+
+#mermaid-1542147319250 .loopLine {
+  stroke-width: 2;
+  stroke-dasharray: '2 2';
+  marker-end: 'url(#arrowhead)';
+  stroke: #CCCCFF; }
+
+#mermaid-1542147319250 .note {
+  stroke: #aaaa33;
+  fill: #fff5ad; }
+
+#mermaid-1542147319250 .noteText {
+  fill: black;
+  stroke: none;
+  font-family: 'trebuchet ms', verdana, arial;
+  font-size: 14px; }
+
+
+#mermaid-1542147319250 .section {
+  stroke: none;
+  opacity: 0.2; }
+
+#mermaid-1542147319250 .section0 {
+  fill: rgba(102, 102, 255, 0.49); }
+
+#mermaid-1542147319250 .section2 {
+  fill: #fff400; }
+
+#mermaid-1542147319250 .section1,
+#mermaid-1542147319250 .section3 {
+  fill: white;
+  opacity: 0.2; }
+
+#mermaid-1542147319250 .sectionTitle0 {
+  fill: #333; }
+
+#mermaid-1542147319250 .sectionTitle1 {
+  fill: #333; }
+
+#mermaid-1542147319250 .sectionTitle2 {
+  fill: #333; }
+
+#mermaid-1542147319250 .sectionTitle3 {
+  fill: #333; }
+
+#mermaid-1542147319250 .sectionTitle {
+  text-anchor: start;
+  font-size: 11px;
+  text-height: 14px; }
+
+
+#mermaid-1542147319250 .grid .tick {
+  stroke: lightgrey;
+  opacity: 0.3;
+  shape-rendering: crispEdges; }
+
+#mermaid-1542147319250 .grid path {
+  stroke-width: 0; }
+
+
+#mermaid-1542147319250 .today {
+  fill: none;
+  stroke: red;
+  stroke-width: 2px; }
+
+
+
+#mermaid-1542147319250 .task {
+  stroke-width: 2; }
+
+#mermaid-1542147319250 .taskText {
+  text-anchor: middle;
+  font-size: 11px; }
+
+#mermaid-1542147319250 .taskTextOutsideRight {
+  fill: black;
+  text-anchor: start;
+  font-size: 11px; }
+
+#mermaid-1542147319250 .taskTextOutsideLeft {
+  fill: black;
+  text-anchor: end;
+  font-size: 11px; }
+
+
+#mermaid-1542147319250 .taskText0,
+#mermaid-1542147319250 .taskText1,
+#mermaid-1542147319250 .taskText2,
+#mermaid-1542147319250 .taskText3 {
+  fill: white; }
+
+#mermaid-1542147319250 .task0,
+#mermaid-1542147319250 .task1,
+#mermaid-1542147319250 .task2,
+#mermaid-1542147319250 .task3 {
+  fill: #8a90dd;
+  stroke: #534fbc; }
+
+#mermaid-1542147319250 .taskTextOutside0,
+#mermaid-1542147319250 .taskTextOutside2 {
+  fill: black; }
+
+#mermaid-1542147319250 .taskTextOutside1,
+#mermaid-1542147319250 .taskTextOutside3 {
+  fill: black; }
+
+
+#mermaid-1542147319250 .active0,
+#mermaid-1542147319250 .active1,
+#mermaid-1542147319250 .active2,
+#mermaid-1542147319250 .active3 {
+  fill: #bfc7ff;
+  stroke: #534fbc; }
+
+#mermaid-1542147319250 .activeText0,
+#mermaid-1542147319250 .activeText1,
+#mermaid-1542147319250 .activeText2,
+#mermaid-1542147319250 .activeText3 {
+  fill: black !important; }
+
+
+#mermaid-1542147319250 .done0,
+#mermaid-1542147319250 .done1,
+#mermaid-1542147319250 .done2,
+#mermaid-1542147319250 .done3 {
+  stroke: grey;
+  fill: lightgrey;
+  stroke-width: 2; }
+
+#mermaid-1542147319250 .doneText0,
+#mermaid-1542147319250 .doneText1,
+#mermaid-1542147319250 .doneText2,
+#mermaid-1542147319250 .doneText3 {
+  fill: black !important; }
+
+
+#mermaid-1542147319250 .crit0,
+#mermaid-1542147319250 .crit1,
+#mermaid-1542147319250 .crit2,
+#mermaid-1542147319250 .crit3 {
+  stroke: #ff8888;
+  fill: red;
+  stroke-width: 2; }
+
+#mermaid-1542147319250 .activeCrit0,
+#mermaid-1542147319250 .activeCrit1,
+#mermaid-1542147319250 .activeCrit2,
+#mermaid-1542147319250 .activeCrit3 {
+  stroke: #ff8888;
+  fill: #bfc7ff;
+  stroke-width: 2; }
+
+#mermaid-1542147319250 .doneCrit0,
+#mermaid-1542147319250 .doneCrit1,
+#mermaid-1542147319250 .doneCrit2,
+#mermaid-1542147319250 .doneCrit3 {
+  stroke: #ff8888;
+  fill: lightgrey;
+  stroke-width: 2;
+  cursor: pointer;
+  shape-rendering: crispEdges; }
+
+#mermaid-1542147319250 .doneCritText0,
+#mermaid-1542147319250 .doneCritText1,
+#mermaid-1542147319250 .doneCritText2,
+#mermaid-1542147319250 .doneCritText3 {
+  fill: black !important; }
+
+#mermaid-1542147319250 .activeCritText0,
+#mermaid-1542147319250 .activeCritText1,
+#mermaid-1542147319250 .activeCritText2,
+#mermaid-1542147319250 .activeCritText3 {
+  fill: black !important; }
+
+#mermaid-1542147319250 .titleText {
+  text-anchor: middle;
+  font-size: 18px;
+  fill: black; }
+
+#mermaid-1542147319250 g.classGroup text {
+  fill: #9370DB;
+  stroke: none;
+  font-family: 'trebuchet ms', verdana, arial;
+  font-size: 10px; }
+
+#mermaid-1542147319250 g.classGroup rect {
+  fill: #ECECFF;
+  stroke: #9370DB; }
+
+#mermaid-1542147319250 g.classGroup line {
+  stroke: #9370DB;
+  stroke-width: 1; }
+
+#mermaid-1542147319250 .classLabel .box {
+  stroke: none;
+  stroke-width: 0;
+  fill: #ECECFF;
+  opacity: 0.5; }
+
+#mermaid-1542147319250 .classLabel .label {
+  fill: #9370DB;
+  font-size: 10px; }
+
+#mermaid-1542147319250 .relation {
+  stroke: #9370DB;
+  stroke-width: 1;
+  fill: none; }
+
+#mermaid-1542147319250 #compositionStart {
+  fill: #9370DB;
+  stroke: #9370DB;
+  stroke-width: 1; }
+
+#mermaid-1542147319250 #compositionEnd {
+  fill: #9370DB;
+  stroke: #9370DB;
+  stroke-width: 1; }
+
+#mermaid-1542147319250 #aggregationStart {
+  fill: #ECECFF;
+  stroke: #9370DB;
+  stroke-width: 1; }
+
+#mermaid-1542147319250 #aggregationEnd {
+  fill: #ECECFF;
+  stroke: #9370DB;
+  stroke-width: 1; }
+
+#mermaid-1542147319250 #dependencyStart {
+  fill: #9370DB;
+  stroke: #9370DB;
+  stroke-width: 1; }
+
+#mermaid-1542147319250 #dependencyEnd {
+  fill: #9370DB;
+  stroke: #9370DB;
+  stroke-width: 1; }
+
+#mermaid-1542147319250 #extensionStart {
+  fill: #9370DB;
+  stroke: #9370DB;
+  stroke-width: 1; }
+
+#mermaid-1542147319250 #extensionEnd {
+  fill: #9370DB;
+  stroke: #9370DB;
+  stroke-width: 1; }
+
+#mermaid-1542147319250 .commit-id,
+#mermaid-1542147319250 .commit-msg,
+#mermaid-1542147319250 .branch-label {
+  fill: lightgrey;
+  color: lightgrey; }
+</style><style>#mermaid-1542147319250 {
+    color: rgba(0, 0, 0, 0.65);
+    font: normal normal 400 normal 14px / 21px "Monospaced Number", "Chinese Quote", -apple-system, system-ui, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }</style><g transform="translate(-12, -12)"><g class="output"><g class="clusters"></g><g class="edgePaths"><g class="edgePath" style="opacity: 1;"><path class="path" d="M220.7265625,61L220.7265625,96.5L220.7265625,132" marker-end="url(#arrowhead3576)" style="fill:none"></path><defs><marker id="arrowhead3576" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path class="path" d="M220.7265625,173L220.7265625,208.5L220.7265625,244" marker-end="url(#arrowhead3577)" style="fill:none"></path><defs><marker id="arrowhead3577" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path class="path" d="M220.7265625,285L220.7265625,320.5L220.7265625,356" marker-end="url(#arrowhead3578)" style="fill:none"></path><defs><marker id="arrowhead3578" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path class="path" d="M220.7265625,397L220.7265625,432.5L220.7265625,468" marker-end="url(#arrowhead3579)" style="fill:none"></path><defs><marker id="arrowhead3579" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g></g><g class="edgeLabels"><g class="edgeLabel" transform="translate(220.7265625,96.5)" style="opacity: 1;"><g transform="translate(-61.796875,-10.5)" class="label"><foreignObject width="123.59375" height="21"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span class="edgeLabel">create setup.py file</span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(220.7265625,208.5)" style="opacity: 1;"><g transform="translate(-127.6484375,-10.5)" class="label"><foreignObject width="255.296875" height="21"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span class="edgeLabel">pipenv run python setup.py bdist_wheel</span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(220.7265625,320.5)" style="opacity: 1;"><g transform="translate(-29.6796875,-10.5)" class="label"><foreignObject width="59.359375" height="21"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span class="edgeLabel">ls -al dist</span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(220.7265625,432.5)" style="opacity: 1;"><g transform="translate(-200.7265625,-10.5)" class="label"><foreignObject width="401.453125" height="21"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span class="edgeLabel">pip3 install ec2runner_2018-2018_11_01_0.1-py3-none-any.whl</span></div></foreignObject></g></g></g><g class="nodes"><g class="node" id="A" transform="translate(220.7265625,40.5)" style="opacity: 1;"><rect rx="5" ry="5" x="-65.796875" y="-20.5" width="131.59375" height="41"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-55.796875,-10.5)"><foreignObject width="111.59375" height="21"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">install setup tools</div></foreignObject></g></g></g><g class="node" id="B" transform="translate(220.7265625,152.5)" style="opacity: 1;"><rect rx="5" ry="5" x="-70.4453125" y="-20.5" width="140.890625" height="41"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-60.4453125,-10.5)"><foreignObject width="120.890625" height="21"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">Verify setup.py file</div></foreignObject></g></g></g><g class="node" id="C" transform="translate(220.7265625,264.5)" style="opacity: 1;"><rect rx="5" ry="5" x="-71.390625" y="-20.5" width="142.78125" height="41"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-61.390625,-10.5)"><foreignObject width="122.78125" height="21"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">generate wheel file</div></foreignObject></g></g></g><g class="node" id="D" transform="translate(220.7265625,376.5)" style="opacity: 1;"><rect rx="5" ry="5" x="-103.7265625" y="-20.5" width="207.453125" height="41"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-93.7265625,-10.5)"><foreignObject width="187.453125" height="21"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">to confirm dist folder content</div></foreignObject></g></g></g><g class="node" id="E" transform="translate(220.7265625,488.5)" style="opacity: 1;"><rect rx="5" ry="5" x="-67.609375" y="-20.5" width="135.21875" height="41"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-57.609375,-10.5)"><foreignObject width="115.21875" height="21"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">install it with pip3</div></foreignObject></g></g></g></g></g></g></svg>
