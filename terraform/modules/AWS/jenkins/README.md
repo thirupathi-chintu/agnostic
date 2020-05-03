@@ -266,8 +266,6 @@ Available targets:
 
 
 
-<<<<<<< HEAD
-=======
 ## Share the Love 
 
 Like this project? Please give it a ★ on [our GitHub](https://github.com/cloudposse/terraform-aws-jenkins)! (it helps us **a lot**) 
