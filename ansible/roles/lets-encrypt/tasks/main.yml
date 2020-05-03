@@ -1,0 +1,40 @@
+---
+- name: Clone lets encrypt repo
+  git: repo=git@github.com:letsencrypt/letsencrypt.git dest=/opt/letsencrypt accept_hostkey=yes force=yes
+
+- name: Copy webroot.ini configuration
+  template: src=webroot.j2 dest=/opt/letsencrypt/{{domain_name}}-webroot.ini
+
+- name: Create directories for letsencrypt
+  file: path={{item}} state=directory
+  with_items:
+   - '/etc/letsencrypt'
+
+#Execute this manually
+- name: Configure
+  shell: /opt/letsencrypt/letsencrypt-auto certonly --agree-tos --config /opt/letsencrypt/{{domain_name}}-webroot.ini
+
+- name: Copy renew-certificate shell script
+  template: src=renew-certificates.j2 dest=/opt/letsencrypt/renew-certificate.sh
+
+- name: Setting up cron
+  cron: name="update-letsencrypt-certificate" special_time=daily job="sh /opt/letsencrypt/renew-certificate.sh" state=present
+
+- name: Install sqlite
+  apt: name={{item}} state=present
+  with_items:
+  - sqlite3
+  - libsqlite3-dev
+
+- name: Install pip modules
+  pip: name={{item}} state=present
+  with_items:
+  - cherrypy
+  - jinja2
+  - peewee
+
+- name: Clone lets encrypt management console
+  git: repo=git@github.com:ggtd/Let-s-Encrypt-Certificates-Management-Console-API.git dest=/opt/letsencrypt-management-console accept_hostkey=yes force=yes
+
+- name: Copy app.j2
+  template: src=app.j2 dest=/opt/letsencrypt-management-console/app.py

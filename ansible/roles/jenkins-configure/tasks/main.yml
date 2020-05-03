@@ -1,0 +1,54 @@
+---
+- name: Create Jenkins directory
+  file: path=/home/jenkins/cli state=directory
+
+- name: Copy install jenkins plugins shell script
+  template: src=install-jenkins-plugin.sh.j2 dest=/home/jenkins/install-jenkins-plugins.sh
+
+- name: Install jenkins plugins
+  shell: sh /home/jenkins/install-jenkins-plugins.sh {{item}}
+  with_items:
+  - ansible
+  - ant
+  - antisamy-markup-formatter
+  - aws-java-sdk
+  - categorized-view
+  - conditional-buildstep
+  - copyartifact
+  - credentials
+  - external-monitor-job
+  - git
+  - git-client
+  - htmlpublisher
+  - icon-shim
+  - jackson2-api
+  - javadoc
+  - jobConfigHistory
+  - junit
+  - ldap
+  - mailer
+  - matrix-project
+  - maven-plugin
+  - multiple-scms
+  - pam-auth
+  - parameterized-trigger
+  - performance
+  - rebuild
+  - run-condition
+  - s3
+  - scm-api
+  - script-security
+  - ssh-credentials
+  - structs
+  - thinBackup
+  - token-macro
+  - windows-slaves
+  - workflow-step-api
+  - matrix-auth
+  - extended-choice-parameter 
+
+- name: Stop Jenkins
+  service: name=jenkins state=stopped
+
+- name: Start Jenkins
+  service: name=jenkins state=started

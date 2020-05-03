@@ -1,0 +1,9 @@
+---
+- name: Gather ec2 facts
+  ec2_facts:
+  when: dc_env == "aws"
+
+- name: Update cache
+  apt: update_cache=yes
+  
+- include: install-misc.yml

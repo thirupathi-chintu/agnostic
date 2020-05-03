@@ -1,0 +1,26 @@
+---
+- name: Add the Salt source to the APT source list
+  apt_repository: repo="ppa:saltstack/salt" state=present
+
+- name: Install salt-minion
+  apt: name={{item}} state=present
+  with_items:
+   - salt-minion
+
+- name: Configure salt-minion
+  template: src=minion.j2 dest=/etc/salt/minion
+
+- name: Configure salt-minion hostname
+  template: src=minion_id.j2 dest=/etc/salt/minion_id
+
+- name: Create pki directory
+  file: path=/etc/salt/pki/minion/ state=directory
+
+#- name: Copy pki keys
+#  copy: src={{salt_pem}} dest=/etc/salt/pki/minion/salt.pem
+
+#- name: Copy pki keys
+#  copy: src={{salt_pub}} dest=/etc/salt/pki/minion/salt.pub
+
+- name: Restart salt-minion
+  service: name=salt-minion state=restarted

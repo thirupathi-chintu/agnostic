@@ -1,0 +1,53 @@
+---
+- name: Add the tor APT repository
+  apt_key: keyserver=keys.gnupg.net id=886DDD89 state=present
+  tags:
+    - tor-installation
+
+- name: Add tor repository
+  apt_repository: repo="deb http://deb.torproject.org/torproject.org trusty main" state=present
+  tags:
+    - tor-installation
+
+- name: Install tor
+  apt: name={{item}} state=present force=yes
+  with_items:
+  - tor
+  - netcat
+  - connect-proxy
+  tags:
+    - tor-installation
+
+- name: Stop tor
+  service: name=tor state=stopped
+  tags:
+    - tor-restart
+
+- name: Configure Tor
+  lineinfile: dest=/etc/tor/torrc line="{{item}}"
+  with_items:
+  - HiddenServiceDir /var/lib/tor/hidden_service_web/
+  - HiddenServicePort 80 127.0.0.1:80
+  - HiddenServicePort 443 127.0.0.1:443
+  - HiddenServicePort 22 127.0.0.1:22
+  tags:
+    - tor-configuration
+
+- name: Start tor
+  service: name=tor state=started
+  tags:
+    - tor-restart
+
+- name: Configure ssh_config
+  lineinfile: dest=/etc/ssh/ssh_config line="{{item}}"
+  with_items:
+    - Host *
+    - CheckHostIP no
+    - Compression yes
+    - Protocol 2
+    - ProxyCommand connect -4 -S localhost:9050 $(tor-resolve %h localhost:9050) %p
+
+- name: Restart ssh
+  service: name=ssh state=restarted
+  tags:
+    - ssh-restart

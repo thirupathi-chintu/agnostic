@@ -1,0 +1,21 @@
+---
+- name: Add New Relic APT key
+  apt_key: url=https://download.newrelic.com/548C16BF.gpg state=present
+
+- name: Add New Relic repo
+  apt_repository: repo="deb http://apt.newrelic.com/debian/ newrelic non-free" state=present
+
+- name: Install New Relic agent
+  apt: name={{item}} state=present
+  with_items:
+  - newrelic-php5
+
+- name: Configure New Relic agent php
+  template: src=new_relic_php.j2 dest=/etc/php/7.0/mods-available/newrelic.ini
+
+
+- name: Restart
+  service: name={{item}} state=restarted
+  with_items:
+  - php7.0-fpm
+  - nginx

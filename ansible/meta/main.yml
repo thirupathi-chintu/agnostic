@@ -1,0 +1,52 @@
+---
+galaxy_info:
+  author: Adithya Khamithkar
+  description: Ansible playbook collection that have been written for Ubuntu. Some of the playbooks are Elasticsearch, Mesos, AWS, MySql, Sensu, Nginx etc..
+  license: MIT
+  min_ansible_version: 2.0
+  platforms:
+   - name: Ubuntu
+  versions:
+   - trusty
+  categories:
+   - system
+   - elasticsearch
+   - glassfish
+   - java
+   - jdk
+   - jenkins
+   - mysql
+   - nginx
+   - php
+   - sensu
+   - tomcat
+   - kafka
+   - ldap
+   - logstash
+   - mesos
+   - mongodb
+   - phabricator
+   - redis
+   - salt
+   - solr
+   - zookeeper
+   - monitoring
+   - rabbitmq
+   - docker
+   - agar
+   - bittorrentsync
+   - aws
+   - ec2
+   - newrelic
+   - ntp
+   - varnish
+   - psad
+   - ossec
+   - tiger
+   - chkrootkit
+   - rkhunter
+   - docker
+   - rancher
+   - gitlab
+   - nodejs
+dependencies: []

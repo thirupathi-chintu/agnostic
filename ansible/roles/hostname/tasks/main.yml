@@ -1,0 +1,23 @@
+---
+- name: Gather ec2 facts
+  ec2_facts:
+  when: pl_dc_env == "aws"
+
+- name: Set Host name
+  hostname: name={{hostname}}
+  tags:
+    - set-hostname
+
+- name: Replace default hosts file
+  lineinfile: dest=/etc/hosts line='{{ansible_ssh_host}} {{hostname}}.{{domain_name}} {{hostname}} localhost' state=present
+  tags:
+    - set-hostname
+
+- name: Prevent IP Spoofing
+  template: src=hosts.conf dest=/etc/host.conf
+  tags:
+    - set-hostname
+
+- name: Update ec2 tags
+  include: ec2-tags.yml
+  when: dc_env == "aws"

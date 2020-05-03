@@ -1,0 +1,23 @@
+---
+- name: Install misc packages
+  apt: name={{item}} state=present
+  with_items:
+  - curl
+  - git
+  - zip
+  - unzip
+  - vim
+  - logrotate
+  - ufw
+  - python-pip
+  - ttf-ancient-fonts
+  - xclip
+  - nscd
+
+- name: Set locale
+  shell: locale-gen "en_US.UTF-8"
+
+- name: Install pip modules
+  pip: name={{item}} state=present
+  with_items:
+  - boto

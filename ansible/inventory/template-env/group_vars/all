@@ -1,0 +1,122 @@
+##Define Domain name (Can't be blank)
+domain_name :
+
+#Define datacenter environment (Can't be blank)
+dc_env :
+env : test-env
+aws_access_key:
+aws_secret_key:
+
+##Environment variables
+vpc_name : Staging-VPC
+aws_region : ap-southeast-1
+resource_tags : { "Name":"Staging-VPC" }
+cidr_block : 10.0.0.0/16
+#Subnet-web
+cidr_web_1 : 10.0.1.0/24
+az_web_1: ap-southeast-1a
+cidr_web_2 : 10.0.2.0/24
+az_web_2: ap-southeast-1b
+resource_tags_web_1 : { "Name":"Staging-ap-southeast-1a", "Environment":"Staging", "Service" : "Web" }
+resource_tags_web_2 : { "Name":"Staging-ap-southeast-1b", "Environment":"Staging", "Service" : "Web" }
+vpc_id :
+#ELB
+elb_url :
+
+##System variables (Can't be blank)
+#Define Time Zone
+timezone : Asia/Calcutta
+
+#Define global ssh user (Can't be blank)
+ansible_ssh_user : vagrant
+#Define private key
+ansible_ssh_private_key_file : .vagrant/machines/test_box/virtualbox/private_key
+id_rsa :
+id_rsa_pub :
+
+##Sensu
+#Define ssl certificate file path
+sensu_ssl_crt_file :
+#Define ssl key file path
+sensu_ssl_key_file :
+#Define ssl ca certificate file path
+sensu_ssl_ca_crt_file :
+#Sensu smtp username
+smtp_username : sensu@sensu-master
+slack_webhook :
+
+##Nginx
+#Define ssl certificate file path
+ssl_crt_file : ~/Dropbox/inventory/test-env/keys/ssl_crt.pem
+#Define ssl key file path
+ssl_key_file : ~/Dropbox/inventory/test-env/keys/ssl_key.pem
+ssl_dhparam : roles/nginx/templates/dhparam.pem
+#Define default document root
+doc_root : /usr/share/nginx/html
+default_index : ~/Dropbox/inventory/test-env/files/nginx/index.html
+#Define error page path
+error_page_404 : ~/Dropbox/inventory/test-env/files/nginx/error-page-404.html
+error_page_50x : ~/Dropbox/inventory/test-env/files/nginx/error-page-50x.html
+error_page_403 : ~/Dropbox/inventory/test-env/files/nginx/error-page-403.html
+
+
+##MySql server variables (Can't be blank)
+mysql_backup : /var/log/mysql_backup
+#MySql password
+mysqlrootpassword : 123
+mysql_password : 123
+mysql_user : root
+
+##Project repo
+project_repo :
+project_doc_root :
+
+##Tools
+#New relic (Can't be blank)
+new_relic_license_key :
+#Sensu Master
+sensu_master : 192.168.44.153
+rabbitmq_user : sensu
+rabbitmq_password : sensu
+#datadog-agent
+datadog_api_key :
+logstash_server :
+
+##Alert information variables
+#Define Intrusion Detection System alerts emailID
+ids_alerts :
+#Define Mysql alerts emailID
+mysql_back_email :
+#Define web-master emailID
+web_master :
+#Sensu alerts
+alert_email :
+
+##URLs
+#Youtrack url
+youtrack_url : http://download-cf.jetbrains.com/charisma/youtrack-6.0.12634.zip
+#Upsourse url
+upsourse_url : http://download-cf.jetbrains.com/upsource/upsource-2.0.3554.zip
+#TeamCity url
+teamcity_url : http://download-cf.jetbrains.com/teamcity/TeamCity-9.0.5.tar.gz
+#Glassfish url
+glassfish_url : http://download.java.net/glassfish/4.1/release/glassfish-4.1.zip
+#Solr
+solr_url : http://apache.mirror1.spango.com/lucene/solr/5.2.1/solr-5.2.1.tgz
+#Kafka
+kafka_url : http://mirror.cc.columbia.edu/pub/software/apache/kafka/0.8.2.1/kafka_2.11-0.8.2.1.tgz
+#Kafka-manager
+kafka_manager_url : ~/kafka-manager-1.2.7.zip
+#Kibana
+kibana_url : https://download.elastic.co/kibana/kibana/kibana-4.1.2-linux-x64.tar.gz
+#phpmyadmin
+phpmyadmin_version : phpMyAdmin-4.4.15-english
+phpmyadmin_url : https://files.phpmyadmin.net/phpMyAdmin/4.4.15/phpMyAdmin-4.4.15-english.zip
+
+###SaltStack
+salt_pem :
+salt_pub :
+
+###ldap
+ldap_base : dc=ldap,dc=adithya,dc=in
+ldap_uri : ldap://{{hostname}}/ ldap://{{hostname}}:666/ ldaps://{{hostname}}/ ldaps://{{hostname}}:666/
