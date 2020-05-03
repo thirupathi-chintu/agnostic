@@ -1,0 +1,459 @@
+
+`terraform-aws-jenkins` is a Terraform module to build a Docker image with [Jenkins](https://jenkins.io/), save it to an [ECR](https://aws.amazon.com/ecr/) repo,
+and deploy to [Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/) running [Docker](https://www.docker.com/).
+
+This is an enterprise-ready, scalable and highly-available architecture and the CI/CD pattern to build and deploy Jenkins.
+
+## Features
+
+The module will create the following AWS resources:
+
+   * Elastic Beanstalk Application
+   * Elastic Beanstalk Environment with Docker stack to run the Jenkins master
+   * ECR repository to store the Jenkins Docker image
+   * EFS filesystem to store Jenkins config and jobs (it will be mounted to a directory on the EC2 host, and then to the Docker container)
+   * AWS Backup stack to automatically backup the EFS
+   * CodePipeline with CodeBuild to build and deploy Jenkins so even Jenkins itself follows the CI/CD pattern
+
+
+After all of the AWS resources are created,
+
+__CodePipeline__ will:
+
+  * Get the specified Jenkins repo from GitHub, _e.g._ https://github.com/cloudposse/jenkins
+  * Build a Docker image from it
+  * Save the Docker image to the ECR repo
+  * Deploy the Docker image from the ECR repo to Elastic Beanstalk running Docker stack
+  * Monitor the GitHub repo for changes and re-run the steps above if new commits are pushed
+
+
+![jenkins build server architecture](https://user-images.githubusercontent.com/52489/30888694-d07d68c8-a2d6-11e7-90b2-d8275ef94f39.png)
+
+
+---
+
+This project is part of our comprehensive ["SweetOps"](https://cpco.io/sweetops) approach towards DevOps. 
+[<img align="right" title="Share via Email" src="https://docs.cloudposse.com/images/ionicons/ios-email-outline-2.0.1-16x16-999999.svg"/>][share_email]
+[<img align="right" title="Share on Google+" src="https://docs.cloudposse.com/images/ionicons/social-googleplus-outline-2.0.1-16x16-999999.svg" />][share_googleplus]
+[<img align="right" title="Share on Facebook" src="https://docs.cloudposse.com/images/ionicons/social-facebook-outline-2.0.1-16x16-999999.svg" />][share_facebook]
+[<img align="right" title="Share on Reddit" src="https://docs.cloudposse.com/images/ionicons/social-reddit-outline-2.0.1-16x16-999999.svg" />][share_reddit]
+[<img align="right" title="Share on LinkedIn" src="https://docs.cloudposse.com/images/ionicons/social-linkedin-outline-2.0.1-16x16-999999.svg" />][share_linkedin]
+[<img align="right" title="Share on Twitter" src="https://docs.cloudposse.com/images/ionicons/social-twitter-outline-2.0.1-16x16-999999.svg" />][share_twitter]
+
+
+[![Terraform Open Source Modules](https://docs.cloudposse.com/images/terraform-open-source-modules.svg)][terraform_modules]
+
+
+
+It's 100% Open Source and licensed under the [APACHE2](LICENSE).
+
+
+
+
+
+
+
+We literally have [*hundreds of terraform modules*][terraform_modules] that are Open Source and well-maintained. Check them out! 
+
+
+
+
+
+
+
+## Usage
+
+
+**IMPORTANT:** The `master` branch is used in `source` just as an example. In your code, do not pin to `master` because there may be breaking changes between releases.
+Instead pin to the release tag (e.g. `?ref=tags/x.y.z`) of one of our [latest releases](https://github.com/cloudposse/terraform-aws-jenkins/releases).
+
+
+For a complete example, see [examples/complete](examples/complete).
+
+For automatic tests of the complete example, see [test](test).
+
+```hcl
+provider "aws" {
+  region = var.region
+}
+
+module "vpc" {
+  source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=tags/0.8.0"
+  namespace  = var.namespace
+  stage      = var.stage
+  name       = var.name
+  attributes = var.attributes
+  tags       = var.tags
+  delimiter  = var.delimiter
+  cidr_block = "172.16.0.0/16"
+}
+
+module "subnets" {
+  source               = "git::https://github.com/cloudposse/terraform-aws-dynamic-subnets.git?ref=tags/0.16.0"
+  availability_zones   = var.availability_zones
+  namespace            = var.namespace
+  stage                = var.stage
+  name                 = var.name
+  attributes           = var.attributes
+  tags                 = var.tags
+  delimiter            = var.delimiter
+  vpc_id               = module.vpc.vpc_id
+  igw_id               = module.vpc.igw_id
+  cidr_block           = module.vpc.vpc_cidr_block
+  nat_gateway_enabled  = true
+  nat_instance_enabled = false
+}
+
+module "jenkins" {
+  source      = "git::https://github.com/cloudposse/terraform-aws-jenkins.git?ref=master"
+  namespace   = var.namespace
+  stage       = var.stage
+  name        = var.name
+  description = var.description
+
+  master_instance_type = var.master_instance_type
+  aws_account_id       = var.aws_account_id
+  region               = var.region
+  availability_zones   = var.availability_zones
+  vpc_id               = module.vpc.vpc_id
+  dns_zone_id          = var.dns_zone_id
+  loadbalancer_subnets = module.subnets.public_subnet_ids
+  application_subnets  = module.subnets.private_subnet_ids
+
+  environment_type                       = var.environment_type
+  loadbalancer_type                      = var.loadbalancer_type
+  loadbalancer_certificate_arn           = var.loadbalancer_certificate_arn
+  availability_zone_selector             = var.availability_zone_selector
+  rolling_update_type                    = var.rolling_update_type
+  loadbalancer_logs_bucket_force_destroy = var.loadbalancer_logs_bucket_force_destroy
+  cicd_bucket_force_destroy              = var.cicd_bucket_force_destroy
+
+  github_oauth_token  = var.github_oauth_token
+  github_organization = var.github_organization
+  github_repo_name    = var.github_repo_name
+  github_branch       = var.github_branch
+
+  image_tag = var.image_tag
+
+  healthcheck_url = var.healthcheck_url
+
+  build_image        = var.build_image
+  build_compute_type = var.build_compute_type
+
+  efs_backup_schedule           = var.efs_backup_schedule
+  efs_backup_start_window       = var.efs_backup_start_window
+  efs_backup_completion_window  = var.efs_backup_completion_window
+  efs_backup_cold_storage_after = var.efs_backup_cold_storage_after
+  efs_backup_delete_after       = var.efs_backup_delete_after
+
+  env_vars = {
+    "JENKINS_USER"          = var.jenkins_username
+    "JENKINS_PASS"          = var.jenkins_password
+    "JENKINS_NUM_EXECUTORS" = var.jenkins_num_executors
+  }
+}
+```
+
+
+
+
+
+
+## Makefile Targets
+```
+Available targets:
+
+  help                                Help screen
+  help/all                            Display help for all targets
+  help/short                          This help short screen
+  lint                                Lint terraform code
+
+```
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|:----:|:-----:|:-----:|
+| allowed_security_groups | List of security groups to be allowed to connect to Jenkins master EC2 instances | list(string) | `<list>` | no |
+| application_subnets | List of subnets to place EC2 instances and EFS | list(string) | - | yes |
+| attributes | Additional attributes (e.g. `1`) | list(string) | `<list>` | no |
+| availability_zone_selector | Availability Zone selector | string | `Any` | no |
+| availability_zones | List of Availability Zones for EFS | list(string) | - | yes |
+| aws_account_id | AWS Account ID. Used as CodeBuild ENV variable $AWS_ACCOUNT_ID when building Docker images. For more info: http://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker.html | string | - | yes |
+| build_compute_type | CodeBuild compute type, e.g. 'BUILD_GENERAL1_SMALL'. For more info: https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html | string | `BUILD_GENERAL1_SMALL` | no |
+| build_image | CodeBuild build image, e.g. 'aws/codebuild/amazonlinux2-x86_64-standard:1.0'. For more info: https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-available.html | string | `aws/codebuild/docker:1.12.1` | no |
+| cicd_bucket_force_destroy | Force destroy the CI/CD S3 bucket even if it's not empty | bool | `false` | no |
+| delimiter | Delimiter to be used between `namespace`, `stage`, `name` and `attributes` | string | `-` | no |
+| description | Will be used as Elastic Beanstalk application description | string | `Jenkins server as Docker container running on Elastic Benastalk` | no |
+| dns_zone_id | Route53 parent zone ID. The module will create sub-domain DNS records in the parent zone for the EB environment and EFS | string | - | yes |
+| efs_backup_cold_storage_after | Specifies the number of days after creation that a recovery point is moved to cold storage | number | `null` | no |
+| efs_backup_completion_window | The amount of time AWS Backup attempts a backup before canceling the job and returning an error. Must be at least 60 minutes greater than `start_window` | number | `null` | no |
+| efs_backup_delete_after | Specifies the number of days after creation that a recovery point is deleted. Must be 90 days greater than `cold_storage_after` | number | `null` | no |
+| efs_backup_schedule | A CRON expression specifying when AWS Backup initiates a backup job | string | `null` | no |
+| efs_backup_start_window | The amount of time in minutes before beginning a backup. Minimum value is 60 minutes | number | `null` | no |
+| env_vars | Map of custom ENV variables to be provided to the Jenkins application running on Elastic Beanstalk, e.g. env_vars = { JENKINS_USER = 'admin' JENKINS_PASS = 'xxxxxx' } | map(string) | `<map>` | no |
+| environment_type | Environment type, e.g. 'LoadBalanced' or 'SingleInstance'.  If setting to 'SingleInstance', `rolling_update_type` must be set to 'Time' or `Immutable`, and `loadbalancer_subnets` will be unused (it applies to the ELB, which does not exist in SingleInstance environments) | string | `LoadBalanced` | no |
+| github_branch | GitHub repository branch, e.g. 'master'. By default, this module will deploy 'https://github.com/cloudposse/jenkins' master branch | string | `master` | no |
+| github_oauth_token | GitHub Oauth Token | string | - | yes |
+| github_organization | GitHub organization, e.g. 'cloudposse'. By default, this module will deploy 'https://github.com/cloudposse/jenkins' repository | string | `cloudposse` | no |
+| github_repo_name | GitHub repository name, e.g. 'jenkins'. By default, this module will deploy 'https://github.com/cloudposse/jenkins' repository | string | `jenkins` | no |
+| healthcheck_url | Application Health Check URL. Elastic Beanstalk will call this URL to check the health of the application running on EC2 instances | string | `/login` | no |
+| image_tag | Docker image tag in the ECR repository, e.g. 'latest'. Used as CodeBuild ENV variable $IMAGE_TAG when building Docker images. For more info: http://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker.html | string | `latest` | no |
+| loadbalancer_certificate_arn | Load Balancer SSL certificate ARN. The certificate must be present in AWS Certificate Manager | string | `` | no |
+| loadbalancer_logs_bucket_force_destroy | Force destroy the S3 bucket for load balancer logs even if it's not empty | bool | `false` | no |
+| loadbalancer_subnets | List of subnets to place Elastic Load Balancer | list(string) | - | yes |
+| loadbalancer_type | Load Balancer type, e.g. 'application' or 'classic' | string | `application` | no |
+| master_instance_type | EC2 instance type for Jenkins master, e.g. 't2.medium' | string | `t2.medium` | no |
+| name | Solution name, e.g. 'app' or 'jenkins' | string | - | yes |
+| namespace | Namespace, which could be your organization name, e.g. 'eg' or 'cp' | string | `` | no |
+| region | AWS region in which to provision the AWS resources | string | - | yes |
+| rolling_update_type | `Health`, `Time` or `Immutable`. Set it to `Immutable` to apply the configuration change to a fresh group of instances. For more details, see https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options-general.html#command-options-general-autoscalingupdatepolicyrollingupdate | string | `Health` | no |
+| solution_stack_name | Elastic Beanstalk stack, e.g. Docker, Go, Node, Java, IIS. For more info: http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts.platforms.html | string | `64bit Amazon Linux 2018.03 v2.12.17 running Docker 18.06.1-ce` | no |
+| ssh_key_pair | Name of SSH key that will be deployed on Elastic Beanstalk instances. The key should be present in AWS | string | `` | no |
+| stage | Stage, e.g. 'prod', 'staging', 'dev', or 'test' | string | `` | no |
+| tags | Additional tags (e.g. `map('BusinessUnit`,`XYZ`) | map(string) | `<map>` | no |
+| use_efs_ip_address | If set to `true`, will provide the EFS IP address instead of DNS name to Jenkins as ENV var | bool | `false` | no |
+| vpc_id | ID of the VPC in which to provision the AWS resources | string | - | yes |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| codebuild_badge_url | The URL of the build badge when badge_enabled is enabled |
+| codebuild_cache_bucket_arn | CodeBuild cache S3 bucket ARN |
+| codebuild_cache_bucket_name | CodeBuild cache S3 bucket name |
+| codebuild_project_id | CodeBuild project ID |
+| codebuild_project_name | CodeBuild project name |
+| codebuild_role_arn | CodeBuild IAM Role ARN |
+| codebuild_role_id | CodeBuild IAM Role ID |
+| codepipeline_arn | CodePipeline ARN |
+| codepipeline_id | CodePipeline ID |
+| ecr_registry_id | Registry ID |
+| ecr_registry_url | Registry URL |
+| ecr_repository_name | Registry name |
+| efs_arn | EFS ARN |
+| efs_backup_plan_arn | Backup Plan ARN |
+| efs_backup_plan_version | Unique, randomly generated, Unicode, UTF-8 encoded string that serves as the version ID of the backup plan |
+| efs_backup_selection_id | Backup Selection ID |
+| efs_backup_vault_arn | Backup Vault ARN |
+| efs_backup_vault_id | Backup Vault ID |
+| efs_backup_vault_recovery_points | Backup Vault recovery points |
+| efs_dns_name | EFS DNS name |
+| efs_host | Route53 DNS hostname for the EFS |
+| efs_id | EFS ID |
+| efs_mount_target_dns_names | List of EFS mount target DNS names |
+| efs_mount_target_ids | List of EFS mount target IDs (one per Availability Zone) |
+| efs_mount_target_ips | List of EFS mount target IPs (one per Availability Zone) |
+| efs_network_interface_ids | List of mount target network interface IDs |
+| elastic_beanstalk_application_name | Elastic Beanstalk Application name |
+| elastic_beanstalk_environment_all_settings | List of all option settings configured in the environment. These are a combination of default settings and their overrides from setting in the configuration |
+| elastic_beanstalk_environment_application | The Elastic Beanstalk Application specified for this environment |
+| elastic_beanstalk_environment_autoscaling_groups | The autoscaling groups used by this environment |
+| elastic_beanstalk_environment_ec2_instance_profile_role_name | Instance IAM role name |
+| elastic_beanstalk_environment_elb_zone_id | ELB zone id |
+| elastic_beanstalk_environment_endpoint | Fully qualified DNS name for the environment |
+| elastic_beanstalk_environment_hostname | DNS hostname |
+| elastic_beanstalk_environment_id | ID of the Elastic Beanstalk environment |
+| elastic_beanstalk_environment_instances | Instances used by this environment |
+| elastic_beanstalk_environment_launch_configurations | Launch configurations in use by this environment |
+| elastic_beanstalk_environment_load_balancers | Elastic Load Balancers in use by this environment |
+| elastic_beanstalk_environment_name | Name |
+| elastic_beanstalk_environment_queues | SQS queues in use by this environment |
+| elastic_beanstalk_environment_security_group_id | Security group id |
+| elastic_beanstalk_environment_setting | Settings specifically set for this environment |
+| elastic_beanstalk_environment_tier | The environment tier |
+| elastic_beanstalk_environment_triggers | Autoscaling triggers in use by this environment |
+
+
+
+
+## Share the Love 
+
+Like this project? Please give it a ★ on [our GitHub](https://github.com/cloudposse/terraform-aws-jenkins)! (it helps us **a lot**) 
+
+Are you using this project or any of our other projects? Consider [leaving a testimonial][testimonial]. =)
+
+
+## Related Projects
+
+Check out these related projects.
+
+- [terraform-aws-elastic-beanstalk-application](https://github.com/cloudposse/terraform-aws-elastic-beanstalk-application) - Terraform module to provision AWS Elastic Beanstalk application
+- [terraform-aws-elastic-beanstalk-environment](https://github.com/cloudposse/terraform-aws-elastic-beanstalk-environment) - Terraform module to provision AWS Elastic Beanstalk environment
+- [terraform-aws-ecr](https://github.com/cloudposse/terraform-aws-ecr) - Terraform Module to manage Docker Container Registries on AWS ECR
+- [terraform-aws-efs](https://github.com/cloudposse/terraform-aws-efs) - Terraform Module to define an EFS Filesystem (aka NFS)
+- [terraform-aws-efs-backup](https://github.com/cloudposse/terraform-aws-efs-backup) - Terraform module designed to easily backup EFS filesystems to S3 using DataPipeline
+- [terraform-aws-cicd](https://github.com/cloudposse/terraform-aws-cicd) - Terraform Module for CI/CD with AWS Code Pipeline and Code Build
+- [terraform-aws-codebuild](https://github.com/cloudposse/terraform-aws-codebuild) - Terraform Module to easily leverage AWS CodeBuild for Continuous Integration
+
+
+
+## Help
+
+**Got a question?**
+
+File a GitHub [issue](https://github.com/cloudposse/terraform-aws-jenkins/issues), send us an [email][email] or join our [Slack Community][slack].
+
+[![README Commercial Support][readme_commercial_support_img]][readme_commercial_support_link]
+
+## Commercial Support
+
+Work directly with our team of DevOps experts via email, slack, and video conferencing. 
+
+We provide [*commercial support*][commercial_support] for all of our [Open Source][github] projects. As a *Dedicated Support* customer, you have access to our team of subject matter experts at a fraction of the cost of a full-time engineer. 
+
+[![E-Mail](https://img.shields.io/badge/email-hello@cloudposse.com-blue.svg)][email]
+
+- **Questions.** We'll use a Shared Slack channel between your team and ours.
+- **Troubleshooting.** We'll help you triage why things aren't working.
+- **Code Reviews.** We'll review your Pull Requests and provide constructive feedback.
+- **Bug Fixes.** We'll rapidly work to fix any bugs in our projects.
+- **Build New Terraform Modules.** We'll [develop original modules][module_development] to provision infrastructure.
+- **Cloud Architecture.** We'll assist with your cloud strategy and design.
+- **Implementation.** We'll provide hands-on support to implement our reference architectures. 
+
+
+
+## Terraform Module Development
+
+Are you interested in custom Terraform module development? Submit your inquiry using [our form][module_development] today and we'll get back to you ASAP.
+
+
+## Slack Community
+
+Join our [Open Source Community][slack] on Slack. It's **FREE** for everyone! Our "SweetOps" community is where you get to talk with others who share a similar vision for how to rollout and manage infrastructure. This is the best place to talk shop, ask questions, solicit feedback, and work together as a community to build totally *sweet* infrastructure.
+
+## Newsletter
+
+Signup for [our newsletter][newsletter] that covers everything on our technology radar.  Receive updates on what we're up to on GitHub as well as awesome new projects we discover. 
+
+## Contributing
+
+### Bug Reports & Feature Requests
+
+Please use the [issue tracker](https://github.com/cloudposse/terraform-aws-jenkins/issues) to report any bugs or file feature requests.
+
+### Developing
+
+If you are interested in being a contributor and want to get involved in developing this project or [help out](https://cpco.io/help-out) with our other projects, we would love to hear from you! Shoot us an [email][email].
+
+In general, PRs are welcome. We follow the typical "fork-and-pull" Git workflow.
+
+ 1. **Fork** the repo on GitHub
+ 2. **Clone** the project to your own machine
+ 3. **Commit** changes to your own branch
+ 4. **Push** your work back up to your fork
+ 5. Submit a **Pull Request** so that we can review your changes
+
+**NOTE:** Be sure to merge the latest changes from "upstream" before making a pull request!
+
+
+## Copyright
+
+Copyright © 2017-2019 [Cloud Posse, LLC](https://cpco.io/copyright)
+
+
+
+## License 
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) 
+
+See [LICENSE](LICENSE) for full details.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+
+
+
+
+
+
+
+
+## Trademarks
+
+All other trademarks referenced herein are the property of their respective owners.
+
+## About
+
+This project is maintained and funded by [Cloud Posse, LLC][website]. Like it? Please let us know by [leaving a testimonial][testimonial]!
+
+[![Cloud Posse][logo]][website]
+
+We're a [DevOps Professional Services][hire] company based in Los Angeles, CA. We ❤️  [Open Source Software][we_love_open_source].
+
+We offer [paid support][commercial_support] on all of our projects.  
+
+Check out [our other projects][github], [follow us on twitter][twitter], [apply for a job][jobs], or [hire us][hire] to help with your cloud strategy and implementation.
+
+
+
+### Contributors
+
+|  [![Erik Osterman][osterman_avatar]][osterman_homepage]<br/>[Erik Osterman][osterman_homepage] | [![Andriy Knysh][aknysh_avatar]][aknysh_homepage]<br/>[Andriy Knysh][aknysh_homepage] | [![Igor Rodionov][goruha_avatar]][goruha_homepage]<br/>[Igor Rodionov][goruha_homepage] | [![Ivan Pinatti][ivan-pinatti_avatar]][ivan-pinatti_homepage]<br/>[Ivan Pinatti][ivan-pinatti_homepage] | [![Sergey Vasilyev][s2504s_avatar]][s2504s_homepage]<br/>[Sergey Vasilyev][s2504s_homepage] |
+|---|---|---|---|---|
+
+
+  [osterman_homepage]: https://github.com/osterman
+  [osterman_avatar]: https://img.cloudposse.com/150x150/https://github.com/osterman.png
+
+  [aknysh_homepage]: https://github.com/aknysh/
+  [aknysh_avatar]: https://img.cloudposse.com/150x150/https://github.com/aknysh.png
+
+  [goruha_homepage]: https://github.com/goruha/
+  [goruha_avatar]: https://img.cloudposse.com/150x150/https://github.com/goruha.png
+
+  [ivan-pinatti_homepage]: https://github.com/ivan-pinatti/
+  [ivan-pinatti_avatar]: https://img.cloudposse.com/150x150/https://github.com/ivan-pinatti.png
+
+  [s2504s_homepage]: https://github.com/s2504s/
+  [s2504s_avatar]: https://img.cloudposse.com/150x150/https://github.com/s2504s.png
+
+
+
+[![README Footer][readme_footer_img]][readme_footer_link]
+[![Beacon][beacon]][website]
+
+  [logo]: https://cloudposse.com/logo-300x69.svg
+  [docs]: https://cpco.io/docs
+  [website]: https://cpco.io/homepage
+  [github]: https://cpco.io/github
+  [jobs]: https://cpco.io/jobs
+  [hire]: https://cpco.io/hire
+  [slack]: https://cpco.io/slack
+  [linkedin]: https://cpco.io/linkedin
+  [twitter]: https://cpco.io/twitter
+  [testimonial]: https://cpco.io/leave-testimonial
+  [newsletter]: https://cpco.io/newsletter
+  [email]: https://cpco.io/email
+  [commercial_support]: https://cpco.io/commercial-support
+  [we_love_open_source]: https://cpco.io/we-love-open-source
+  [module_development]: https://cpco.io/module-development
+  [terraform_modules]: https://cpco.io/terraform-modules
+  [readme_header_img]: https://cloudposse.com/readme/header/img?repo=cloudposse/terraform-aws-jenkins
+  [readme_header_link]: https://cloudposse.com/readme/header/link?repo=cloudposse/terraform-aws-jenkins
+  [readme_footer_img]: https://cloudposse.com/readme/footer/img?repo=cloudposse/terraform-aws-jenkins
+  [readme_footer_link]: https://cloudposse.com/readme/footer/link?repo=cloudposse/terraform-aws-jenkins
+  [readme_commercial_support_img]: https://cloudposse.com/readme/commercial-support/img?repo=cloudposse/terraform-aws-jenkins
+  [readme_commercial_support_link]: https://cloudposse.com/readme/commercial-support/link?repo=cloudposse/terraform-aws-jenkins
+  [share_twitter]: https://twitter.com/intent/tweet/?text=terraform-aws-jenkins&url=https://github.com/cloudposse/terraform-aws-jenkins
+  [share_linkedin]: https://www.linkedin.com/shareArticle?mini=true&title=terraform-aws-jenkins&url=https://github.com/cloudposse/terraform-aws-jenkins
+  [share_reddit]: https://reddit.com/submit/?url=https://github.com/cloudposse/terraform-aws-jenkins
+  [share_facebook]: https://facebook.com/sharer/sharer.php?u=https://github.com/cloudposse/terraform-aws-jenkins
+  [share_googleplus]: https://plus.google.com/share?url=https://github.com/cloudposse/terraform-aws-jenkins
+  [share_email]: mailto:?subject=terraform-aws-jenkins&body=https://github.com/cloudposse/terraform-aws-jenkins
+  [beacon]: https://ga-beacon.cloudposse.com/UA-76589703-4/cloudposse/terraform-aws-jenkins?pixel&cs=github&cm=readme&an=terraform-aws-jenkins
