@@ -1,0 +1,10 @@
+{
+  "client": {
+    "name": "{{hostname}}",
+    "address": "{{ansible_ssh_host}}",
+    "subscriptions": ["ALL","nginx","sensu_master"],
+    "safe_mode": true,
+    "distribution": "{{ansible_distribution}}",
+    "os_version": "{{ansible_distribution_release}}"
+  }
+}

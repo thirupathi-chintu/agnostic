@@ -1,0 +1,38 @@
+[all]
+
+[all:vars]
+
+#Localhost
+[local]
+localhost              ansible_connection=local
+
+[test]
+test-box ansible_ssh_host=192.168.33.10 hostname=test-box
+
+[sensu-master]
+sensu-master-test-evn ansible_ssh_host=192.168.0.107 hostname=sensu-master-test-evn
+
+[web-server:vars]
+
+[web-server]
+web-01 ansible_ssh_host=192.168.0.108 hostname=web-01
+web-02 ansible_ssh_host=192.168.0.109 hostname=web-02
+
+[db-server]
+db-01 ansible_ssh_host=192.168.0.111 hostname=db-01
+
+[jenkins]
+jenkins-01 ansible_ssh_host=192.168.0.110 hostname=jenkins-01
+
+[elasticsearch:children]
+elasticsearch-master
+elasticsearch-data
+
+[elasticsearch:vars]
+cluster=elasticsearch
+
+[elasticsearch-master]
+#elasticsearch-master-01 ansible_ssh_host= hostname=elasticsearch-master-01
+
+[elasticsearch-data]
+#elasticsearch-data-01 ansible_ssh_host= hostname=elasticsearch-data-01

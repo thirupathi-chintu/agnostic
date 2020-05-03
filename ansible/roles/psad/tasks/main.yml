@@ -1,0 +1,15 @@
+---
+- name: Intrusion Detection - psad
+  apt: name={{item}} state=present
+  with_items:
+  - psad
+
+- name: Enable logging
+  shell: iptables -A {{item}} -j LOG
+  with_items:
+    - INPUT
+    - FORWARD
+
+- name: Configure psad
+  template: src=psad.conf dest=/etc/psad/psad.conf
+  notify: Restart psad

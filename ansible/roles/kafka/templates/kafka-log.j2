@@ -1,0 +1,10 @@
+/var/log/kafka-logs/*.log {
+    rotate 7
+    daily
+    missingok
+    notifempty
+    sharedscripts
+    copytruncate
+    compress
+    endscript
+}

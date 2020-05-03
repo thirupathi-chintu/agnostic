@@ -1,0 +1,9 @@
+{
+  "checks": {
+    "nginx_check": {
+      "handlers": ["default"],
+      "command": "/opt/sensu/embedded/bin/ruby /etc/sensu-community-plugins/plugins/processes/check-procs.rb -p nginx -C 1",
+      "interval": 60,
+      "subscribers": ["nginx"]
+    }
+  }

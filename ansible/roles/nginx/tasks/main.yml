@@ -1,0 +1,63 @@
+---
+- name: Add the Nginx source to the APT source list
+  apt_repository: repo="ppa:nginx/stable" state=present
+  tags:
+    - nginx-installation
+
+- name: Install Nginx
+  apt: name={{item}} state=latest
+  with_items:
+   - nginx
+   - nginx-extras
+   - openssl
+  tags:
+    - nginx-installation
+
+- name: Create directories for ssl, error_pages & deployment_info
+  file: path={{item}} state=directory
+  with_items:
+   - '{{nginx_deployment_info_dir}}'
+   - '{{nginx_logs_dir}}'
+   - '{{nginx_error_pages_dir}}'
+   - '{{nginx_ssl_dir}}'
+   - '{{nginx_doc_root}}'
+  tags:
+    - nginx-configuration
+
+- name: Copy default index, error_pages & ssl certificates
+  copy: src={{item.src}} dest={{item.dest}}
+  with_items:
+    - { src: '{{default_index}}', dest: '{{nginx_doc_root}}' }
+    - { src: '{{error_page_404}}', dest: '{{nginx_error_pages_dir}}' }
+    - { src: '{{error_page_50x}}', dest: '{{nginx_error_pages_dir}}' }
+    - { src: '{{error_page_403}}', dest: '{{nginx_error_pages_dir}}' }
+    - { src: '{{ssl_crt_file}}', dest: '{{nginx_ssl_dir}}/ssl_crt.pem' }
+    - { src: '{{ssl_key_file}}', dest: '{{nginx_ssl_dir}}/ssl_key.pem' }
+  tags:
+    - nginx-configuration
+
+- name: Stop Nginx
+  service: name=nginx state=stopped
+  tags:
+    - nginx-configuration
+
+- name: Configure Nginx
+  template: src=nginx.j2 dest=/etc/nginx/nginx.conf
+  tags:
+    - nginx-configuration
+
+- name: Configure Nginx virtualhost
+  template: src={{item.src}} dest={{item.dest}}
+  with_items:
+  - { src: virtualhost.j2, dest: /etc/nginx/sites-available/default }
+  - { src: virtualhost.j2, dest: /etc/nginx/sites-enabled/default }
+  - { src: virtualhost_ssl.j2, dest: /etc/nginx/sites-available/default-ssl }
+  - { src: virtualhost_ssl.j2, dest: /etc/nginx/sites-enabled/default-ssl }
+  - { src: dhparam.pem, dest: /etc/nginx/ssl/dhparam.pem}
+  tags:
+    - nginx-virtualhost-configuration
+
+- name: Start Nginx
+  service: name=nginx state=started
+  tags:
+    - nginx-configuration

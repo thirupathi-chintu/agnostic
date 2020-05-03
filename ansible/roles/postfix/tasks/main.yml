@@ -1,0 +1,69 @@
+---
+- name: Install postfix
+  apt: name={{item}} state=present
+  with_items:
+  - postfix
+  - mailutils
+  - postfix-pcre
+  - libsasl2-modules
+  tags:
+    - postfix-installation
+
+- name: Create SSL directory for postfix
+  file: path=/etc/postfix/ssl state=directory
+  tags:
+    - postfix-configuration
+
+- name: Copy ssl_crt_file to /etc/postfix/ssl
+  template: src={{item.src}} dest={{item.dest}}
+  with_items:
+    - { src: '{{ssl_crt_file}}', dest: /etc/postfix/ssl/ssl_crt.pem }
+    - { src: '{{ssl_key_file}}', dest: /etc/postfix/ssl/ssl_key.pem }
+  tags:
+    - postfix-configuration
+
+- name: Stop postfix
+  service: name=postfix state=stopped
+  tags:
+    - postfix-configuration
+
+- name: Configure postfix
+  template: src={{item.src}} dest={{item.dest}}
+  with_items:
+    - { src: postfix.j2, dest: /etc/postfix/main.cf }
+    - { src: master.j2, dest: /etc/postfix/master.cf }
+    - { src: smtp_header_checks.j2, dest: /etc/postfix/smtp_header_checks }
+  tags:
+    - postfix-configuration
+
+- name: Rebuild
+  command: postmap /etc/postfix/smtp_header_checks
+  tags:
+    - postfix-configuration
+
+#- name: Postfix gmail credentials
+#  template: src=sasl_passwd.j2 dest=/etc/postfix/sasl_passwd mode=0600
+#  tags:
+#    - postfix-gmail-relay
+
+#- name: Postfix gmail relay configure
+#  lineinfile: dest=/etc/postfix/main.cf line="{{item}}"
+#  with_items:
+#  - relayhost = [smtp.gmail.com]:587
+#  - smtp_use_tls = yes
+#  - smtp_sasl_auth_enable = yes
+#  - smtp_sasl_security_options =
+#  - smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+#  - smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+#  tags:
+#    - postfix-gmail-relay
+
+#- name: Rebuild
+#  command: postmap /etc/postfix/sasl_passwd
+#  tags:
+#    - postfix-gmail-relay
+
+- name: Start postfix
+  service: name=postfix state=restarted
+  tags:
+    - postfix-configuration

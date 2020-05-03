@@ -1,0 +1,37 @@
+---
+- name: Add the php7 source to the APT source list
+  apt_repository: repo="ppa:ondrej/php" state=present
+    
+- name: Install Php
+  apt: name={{item}} state=present
+  with_items:
+   - php5.6
+   - php5.6-cli
+   - php5.6-fpm
+   - php5.6-mysql
+   - php5.6-curl
+   - php5.6-gd
+   - php5.6-intl
+   - php-pear
+   - php5.6-imagick
+   - php5.6-imap
+   - php5.6-mcrypt
+   - php5.6-memcache
+   - php5.6-pspell
+   - php5.6-recode
+   - php5.6-snmp
+   - php5.6-tidy
+   - php5.6-xmlrpc
+   - php5.6-xsl
+   - php5.6-memcached
+   - memcached
+   - mcrypt
+   - libapache2-mod-php5.6
+  tags:
+    - php5.6-installation
+
+- name: Configure Php
+  template: src=php.ini dest=/etc/php5.6/fpm/php.ini
+  notify: Restart Php
+  tags:
+    - php5.6-configuration
