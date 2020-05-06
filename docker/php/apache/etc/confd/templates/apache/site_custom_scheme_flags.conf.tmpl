@@ -1,0 +1,19 @@
+RewriteEngine on
+
+RewriteRule ^ - [env=CUSTOM_SCHEME:%{REQUEST_SCHEME}]
+
+{{ if eq "true" (getenv "WEB_HTTPS_OFFLOADED") }}
+RewriteCond %{SERVER_PORT} ={{ getenv "WEB_HTTPS_PORT" }}
+RewriteRule ^ - [env=CUSTOM_SCHEME:https]
+{{ end }}
+
+{{ if eq "true" (getenv "WEB_REVERSE_PROXIED") }}
+RewriteCond %{HTTP:X-Forwarded-Proto} ^.+
+RewriteRule ^ - [env=CUSTOM_SCHEME:%{HTTP:X-Forwarded-Proto}]
+{{ end }}
+
+# Note this only fools CGI-based modules (like mod_php) into thinking it's HTTPS
+RewriteCond %{ENV:CUSTOM_SCHEME} =https
+RewriteRule ^ - [env=HTTPS:on]
+RewriteCond %{ENV:CUSTOM_SCHEME} !=https
+RewriteRule ^ - [env=HTTPS] # empty value = not HTTPS

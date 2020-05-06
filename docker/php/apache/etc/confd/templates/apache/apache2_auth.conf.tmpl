@@ -1,0 +1,17 @@
+{{ if or (eq "true" (getenv "AUTH_HTTP_ENABLED")) (eq "true" (getenv "AUTH_IP_WHITELIST_ENABLED")) }}
+<LocationMatch "^/.*">
+{{ if eq "true" (getenv "AUTH_HTTP_ENABLED") }}
+  AuthUserFile {{ getenv "AUTH_HTTP_FILE" }}
+  AuthType {{ getenv "AUTH_HTTP_TYPE" }}
+  AuthName "{{ getenv "AUTH_HTTP_REALM" }}"
+  Require valid-user
+{{ end }}
+
+{{ if eq "true" (getenv "AUTH_IP_WHITELIST_ENABLED") }}
+{{ $ips := split (replace (replace (getenv "AUTH_IP_WHITELIST") "," " " -1) "\n" " " -1) " " }}
+{{ range $ips }}{{ if . }}
+  Require ip {{ . }}
+{{ end }}{{ end }}
+{{ end }}
+</LocationMatch>
+{{ end }}

@@ -1,0 +1,11 @@
+set $MAGE_ROOT /app;
+set $MAGE_MODE {{ getenv "MAGENTO_MODE" }};
+set $MAGE_RUN_TYPE {{ getenv "MAGENTO_RUN_TYPE" }};
+
+root $MAGE_ROOT/pub;
+
+index index.php;
+autoindex off;
+charset UTF-8;
+error_page 404 403 = /errors/404.php;
+#add_header "X-UA-Compatible" "IE=Edge";

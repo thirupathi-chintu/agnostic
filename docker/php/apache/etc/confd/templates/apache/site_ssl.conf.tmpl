@@ -1,0 +1,16 @@
+SSLCipherSuite {{ getenv "WEB_SSL_CIPHERS" }}
+SSLHonorCipherOrder on
+SSLProtocol {{ getenv "WEB_SSL_PROTOCOLS" }}
+SSLSessionCacheTimeout {{ getenv "WEB_SSL_SESSION_TIMEOUT" }}
+
+{{ if getenv "WEB_SSL_TRUSTED_CERTIFICATES" }}
+SSLCACertificateFile {{ getenv "WEB_SSL_TRUSTED_CERTIFICATES" }}
+{{ end }}
+
+{{ if eq (getenv "WEB_SSL_OCSP_STAPLING") "true" }}
+SSLUseStapling on
+{{ end }}
+
+{{ if eq (getenv "WEB_SSL_DHPARAM_ENABLE") "true" }}
+SSLOpenSSLConfCmd DHParameters "{{ getenv "WEB_SSL_DHPARAM_FILE" }}"
+{{ end }}

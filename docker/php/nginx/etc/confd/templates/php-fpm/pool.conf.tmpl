@@ -1,0 +1,27 @@
+[www]
+user = {{ getenv "APP_USER" }}
+group = {{ getenv "APP_GROUP" }}
+
+catch_workers_output = yes
+clear_env = no
+
+listen = /run/php{{ getenv "PHP_VERSION" }}-fpm.sock
+
+{{ if not (eq "true" (getenv "NON_PRIVILEGED_USER")) }}
+listen.owner = www-data
+listen.group = www-data
+{{ end }}
+
+pm = dynamic
+
+pm.max_children = {{ getenv "PHPFPM_MAX_CHILDREN" }}
+pm.start_servers = {{ getenv "PHPFPM_START_SERVERS" }}
+pm.min_spare_servers = {{ getenv "PHPFPM_MIN_SPARE_SERVERS" }}
+pm.max_spare_servers = {{ getenv "PHPFPM_MAX_SPARE_SERVERS" }}
+
+php_value[date.timezone] = {{ getenv "PHP_TIMEZONE" }}
+php_value[memory_limit] = {{ getenv "PHP_MEMORY_LIMIT" }}
+
+php_admin_value[display_errors] = Off
+php_admin_value[error_log] = /var/log/php-fpm/stdout
+php_admin_flag[log_errors] = on

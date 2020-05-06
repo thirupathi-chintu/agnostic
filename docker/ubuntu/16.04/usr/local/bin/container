@@ -1,0 +1,38 @@
+#!/bin/bash
+set -e
+
+DEBUG=1
+
+while test $#; do
+  case "$1" in
+  --no-debug)
+    DEBUG=0
+    shift
+    ;;
+  *)
+    break
+    ;;
+  esac
+done
+
+TASK=$1
+ARGS=( "$@" )
+
+source /usr/local/share/bootstrap/bootstrap.sh
+
+if [ "$TASK" != "list_functions" ] && is_true "$DEBUG"; then
+  set -x
+fi
+
+if [ "$TASK" == "start" ]; then
+  source /usr/local/bin/supervisor_custom_start
+fi
+
+if [ "$TASK" == "build" ] && [ "$RUN_BUILD" == "false" ]; then
+  exit 0
+fi
+
+set -- "${ARGS[@]}"
+shift 1
+
+"do_$TASK" "$@"

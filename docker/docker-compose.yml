@@ -1,0 +1,827 @@
+version: '3'
+
+services:
+  couchdb16:
+    build:
+      context: ./couchdb/
+      args:
+        FROM_TAG: '1.6'
+    image: quay.io/continuouspipe/couchdb1.6:latest
+    depends_on:
+      - external_couchdb16
+
+  drupal_php71_apache:
+    build:
+      context: ./drupal/
+      args:
+        PHP_VERSION: '7.1'
+    image: quay.io/continuouspipe/drupal-php7.1-apache:latest
+    depends_on:
+      - php71_apache
+
+  drupal_php70_apache:
+    build:
+      context: ./drupal/
+      args:
+        PHP_VERSION: '7'
+    image: quay.io/continuouspipe/drupal-php7-apache:latest
+    depends_on:
+      - php70_apache
+
+  drupal8_apache_php7:
+    build:
+      context: ./drupal/
+      args:
+        PHP_VERSION: '7'
+    image: quay.io/continuouspipe/drupal8-apache-php7:latest
+    depends_on:
+      - php70_apache
+
+  drupal_php56_apache:
+    build:
+      context: ./drupal/
+      args:
+        PHP_VERSION: '5.6'
+    image: quay.io/continuouspipe/drupal-php5.6-apache:latest
+    depends_on:
+      - php56_apache
+
+  drupal8_solr_4_10:
+    build:
+      context: ./drupal8-solr/4.10/
+    image: quay.io/continuouspipe/drupal8-solr4:latest
+    depends_on:
+      - solr_4_10
+
+  drupal8_solr_6_2:
+    build:
+      context: ./drupal8-solr/6.2/
+    image: quay.io/continuouspipe/drupal8-solr6:latest
+    depends_on:
+      - solr_6_2
+
+  drupal8_varnish:
+    build:
+      context: ./drupal8-varnish/4.0/
+    image: quay.io/continuouspipe/drupal8-varnish4:latest
+    depends_on:
+      - varnish
+
+  elasticsearch17:
+    build:
+      context: ./elasticsearch/
+      dockerfile: Dockerfile-dockerhub
+      args:
+        FROM_TAG: '1.7'
+    image: quay.io/continuouspipe/elasticsearch1.7:latest
+    depends_on:
+      - external_elasticsearch17
+
+  elasticsearch24:
+    build:
+      context: ./elasticsearch/
+      dockerfile: Dockerfile-dockerhub
+      args:
+        FROM_TAG: '2.4'
+    image: quay.io/continuouspipe/elasticsearch2.4:latest
+    depends_on:
+      - external_elasticsearch24
+
+  elasticsearch55:
+    build:
+      context: ./elasticsearch/
+      dockerfile: Dockerfile-dockerhub
+      args:
+        FROM_TAG: '5.5'
+    image: quay.io/continuouspipe/elasticsearch5.5:latest
+    depends_on:
+      - external_elasticsearch55
+
+  elasticsearch56:
+    build:
+      context: ./elasticsearch/
+      dockerfile: Dockerfile-elastic
+      args:
+        FROM_TAG: '5.6.9'
+    image: quay.io/continuouspipe/elasticsearch5.6:latest
+    depends_on:
+      - external_elasticsearch56
+
+  ezplatform_php70_apache:
+    build:
+      context: ./ezplatform/
+      args:
+        PHP_VERSION: '7'
+    image: quay.io/continuouspipe/ez6-apache-php7:latest
+    depends_on:
+      - symfony_php70_apache
+
+  ezplatform_php71_apache:
+    build:
+      context: ./ezplatform/
+      args:
+        PHP_VERSION: '7'
+    image: quay.io/continuouspipe/ez6-php7.1-apache:latest
+    depends_on:
+      - symfony_php71_apache
+
+  hem:
+    build:
+      context: ./hem/
+    image: quay.io/continuouspipe/hem1:latest
+    depends_on:
+      - ubuntu
+
+  magento1_php56_apache:
+    build:
+      context: ./magento1/
+      args:
+        FROM_IMAGE: php5.6-apache
+        WEB_SERVER: apache
+    image: quay.io/continuouspipe/magento1-apache-php5.6:latest
+    depends_on:
+      - php56_apache
+
+  magento1_php56_nginx:
+    build:
+      context: ./magento1/
+      args:
+        FROM_IMAGE: php5.6-nginx
+        WEB_SERVER: nginx
+    image: quay.io/continuouspipe/magento1-nginx-php5.6:latest
+    depends_on:
+      - php56_nginx
+
+  magento2_php70_nginx:
+    build:
+      context: ./magento2/
+      args:
+        FROM_IMAGE: 'php7-nginx'
+        REQUIRE_HEM: 'true'
+    image: quay.io/continuouspipe/magento2-nginx-php7:latest
+    depends_on:
+      - php70_nginx
+
+  magento2_php70_nginx_ng:
+    build:
+      context: ./magento2/
+      args:
+        FROM_IMAGE: 'php7-nginx'
+    image: quay.io/continuouspipe/magento2-nginx-php7-ng:latest
+    depends_on:
+      - php70_nginx
+
+  magento2_php71_nginx:
+    build:
+      context: ./magento2/
+      args:
+        FROM_IMAGE: 'php7.1-nginx'
+        REQUIRE_HEM: 'true'
+    image: quay.io/continuouspipe/magento2-nginx-php7.1:latest
+    depends_on:
+      - php71_nginx
+
+  magento2_php71_nginx_ng:
+    build:
+      context: ./magento2/
+      args:
+        FROM_IMAGE: 'php7.1-nginx'
+    image: quay.io/continuouspipe/magento2-nginx-php7.1-ng:latest
+    depends_on:
+      - php71_nginx
+
+  magento2_php72_nginx_ng:
+    build:
+      context: ./magento2/
+      args:
+        FROM_IMAGE: 'php7.2-nginx'
+        NODE_LTS_VERSION: '10.x'
+    image: quay.io/continuouspipe/magento2-nginx-php7.2-ng:latest
+    depends_on:
+      - php72_nginx
+
+  magento2_php73_nginx_ng:
+    build:
+      context: ./magento2/
+      args:
+        FROM_IMAGE: 'php7.3-nginx'
+        NODE_LTS_VERSION: '10.x'
+    image: quay.io/continuouspipe/magento2-nginx-php7.3-ng:latest
+    depends_on:
+      - php73_nginx
+
+  magento2_varnish:
+    build:
+      context: ./magento2-varnish/4.0/
+    image: quay.io/continuouspipe/magento2-varnish4:latest
+    depends_on:
+      - varnish
+
+  mailcatcher:
+    build:
+      context: ./mailcatcher/
+    image: quay.io/continuouspipe/mailcatcher:latest
+    depends_on:
+      - ubuntu
+
+  memcached:
+    build:
+      context: ./memcached/1.4/
+    image: quay.io/continuouspipe/memcached1.4:latest
+    depends_on:
+      - ubuntu
+
+  mongodb36:
+    build:
+      context: ./mongodb/
+      args:
+        FROM_TAG: '3.6'
+    image: quay.io/continuouspipe/mongodb3.6:latest
+    depends_on:
+      - external_mongodb36
+
+  mongodb34:
+    build:
+      context: ./mongodb/
+      args:
+        FROM_TAG: '3.4'
+    image: quay.io/continuouspipe/mongodb3.4:latest
+    depends_on:
+      - external_mongodb34
+
+  mysql80:
+    build:
+      context: ./mysql/
+      args:
+        FROM_TAG: '8.0'
+    image: quay.io/continuouspipe/mysql8.0:latest
+    depends_on:
+      - external_mysql80
+
+  mysql57:
+    build:
+      context: ./mysql/
+      args:
+        FROM_TAG: '5.7'
+    image: quay.io/continuouspipe/mysql5.7:latest
+    depends_on:
+      - external_mysql57
+
+  mysql56:
+    build:
+      context: ./mysql/
+      args:
+        FROM_TAG: '5.6'
+    image: quay.io/continuouspipe/mysql5.6:latest
+    depends_on:
+      - external_mysql56
+
+  mysql55:
+    build:
+      context: ./mysql/
+      args:
+        FROM_TAG: '5.5'
+    image: quay.io/continuouspipe/mysql5.5:latest
+    depends_on:
+      - external_mysql55
+
+  nginx:
+    build: ./nginx/
+    image: quay.io/continuouspipe/nginx:latest
+    depends_on:
+      - ubuntu
+
+  nginx_ingress_controller:
+    build: ./nginx-ingress-controller/
+    image: quay.io/continuouspipe/nginx-ingress-controller:latest
+    depends_on:
+      - external_nginx_ingress_controller
+
+  nginx_reverse_proxy:
+    build: ./nginx-reverse-proxy/
+    image: quay.io/continuouspipe/nginx-reverse-proxy:latest
+    depends_on:
+      - nginx
+
+  nodejs6:
+    build:
+      context: ./nodejs/
+      args:
+        NODE_VERSION: '6.x'
+    image: quay.io/continuouspipe/nodejs6:latest
+    depends_on:
+      - ubuntu
+
+  nodejs6_small:
+    build:
+      context: ./nodejs/
+      args:
+        NODE_VERSION: '6.x'
+        INSTALL_COMMON_PACKAGES: 'false'
+    image: quay.io/continuouspipe/nodejs6-small:latest
+    depends_on:
+      - ubuntu
+
+  nodejs7:
+    build:
+      context: ./nodejs/
+      args:
+        NODE_VERSION: '7.x'
+    image: quay.io/continuouspipe/nodejs7:latest
+    depends_on:
+      - ubuntu
+
+  nodejs7_small:
+    build:
+      context: ./nodejs/
+      args:
+        NODE_VERSION: '7.x'
+        INSTALL_COMMON_PACKAGES: 'false'
+    image: quay.io/continuouspipe/nodejs7-small:latest
+    depends_on:
+      - ubuntu
+
+  nodejs8:
+    build:
+      context: ./nodejs/
+      args:
+        NODE_VERSION: '8.x'
+    image: quay.io/continuouspipe/nodejs8:latest
+    depends_on:
+      - ubuntu
+
+  nodejs8_small:
+    build:
+      context: ./nodejs/
+      args:
+        NODE_VERSION: '8.x'
+        INSTALL_COMMON_PACKAGES: 'false'
+    image: quay.io/continuouspipe/nodejs8-small:latest
+    depends_on:
+      - ubuntu
+
+  phantomjs2:
+    build: ./phantomjs
+    image: quay.io/continuouspipe/phantomjs2:latest
+    depends_on:
+      - ubuntu
+
+  piwik_php71_apache:
+    build:
+      context: ./piwik/
+      args:
+        PHP_VERSION: 7.1
+    image: quay.io/continuouspipe/piwik-php7.1-apache:latest
+    depends_on:
+      - php71_apache
+
+  php73:
+    build:
+      context: ./php/
+      dockerfile: Dockerfile-php
+      args:
+        PHP_VERSION: '7.3'
+    image: quay.io/continuouspipe/php7.3:latest
+    depends_on:
+      - ubuntu
+
+  php72:
+    build:
+      context: ./php/
+      dockerfile: Dockerfile-php
+      args:
+        PHP_VERSION: '7.2'
+    image: quay.io/continuouspipe/php7.2:latest
+    depends_on:
+      - ubuntu
+
+  php71:
+    build:
+      context: ./php/
+      dockerfile: Dockerfile-php
+      args:
+        PHP_VERSION: '7.1'
+    image: quay.io/continuouspipe/php7.1:latest
+    depends_on:
+      - ubuntu
+
+  php70:
+    build:
+      context: ./php/
+      dockerfile: Dockerfile-php
+      args:
+        PHP_VERSION: '7.0'
+    image: quay.io/continuouspipe/php7:latest
+    depends_on:
+      - ubuntu
+
+  php56:
+    build:
+      context: ./php/
+      dockerfile: Dockerfile-php
+      args:
+        PHP_VERSION: '5.6'
+    image: quay.io/continuouspipe/php5.6:latest
+    depends_on:
+      - ubuntu
+
+  php73_apache:
+    build:
+      context: ./php/
+      dockerfile: Dockerfile-apache
+      args:
+        PHP_IMAGE_VERSION: '7.3'
+    image: quay.io/continuouspipe/php7.3-apache:latest
+    depends_on:
+      - php73
+
+  php72_apache:
+    build:
+      context: ./php/
+      dockerfile: Dockerfile-apache
+      args:
+        PHP_IMAGE_VERSION: '7.2'
+    image: quay.io/continuouspipe/php7.2-apache:latest
+    depends_on:
+      - php72
+
+  php71_apache:
+    build:
+      context: ./php/
+      dockerfile: Dockerfile-apache
+      args:
+        PHP_IMAGE_VERSION: '7.1'
+    image: quay.io/continuouspipe/php7.1-apache:latest
+    depends_on:
+      - php71
+
+  php70_apache:
+    build:
+      context: ./php/
+      dockerfile: Dockerfile-apache
+      args:
+        PHP_IMAGE_VERSION: '7'
+    image: quay.io/continuouspipe/php7-apache:latest
+    depends_on:
+      - php70
+
+  php56_apache:
+    build:
+      context: ./php/
+      dockerfile: Dockerfile-apache
+      args:
+        PHP_IMAGE_VERSION: '5.6'
+    image: quay.io/continuouspipe/php5.6-apache:latest
+    depends_on:
+      - php56
+
+  php73_nginx:
+    build:
+      context: ./php/
+      dockerfile: Dockerfile-nginx
+      args:
+        PHP_IMAGE_VERSION: '7.3'
+    image: quay.io/continuouspipe/php7.3-nginx:latest
+    depends_on:
+      - php73
+
+  php72_nginx:
+    build:
+      context: ./php/
+      dockerfile: Dockerfile-nginx
+      args:
+        PHP_IMAGE_VERSION: '7.2'
+    image: quay.io/continuouspipe/php7.2-nginx:latest
+    depends_on:
+      - php72
+
+  php71_nginx:
+    build:
+      context: ./php/
+      dockerfile: Dockerfile-nginx
+      args:
+        PHP_IMAGE_VERSION: '7.1'
+    image: quay.io/continuouspipe/php7.1-nginx:latest
+    depends_on:
+      - php71
+
+  php70_nginx:
+    build:
+      context: ./php/
+      dockerfile: Dockerfile-nginx
+      args:
+        PHP_IMAGE_VERSION: '7'
+    image: quay.io/continuouspipe/php7-nginx:latest
+    depends_on:
+      - php70
+
+  php56_nginx:
+    build:
+      context: ./php/
+      dockerfile: Dockerfile-nginx
+      args:
+        PHP_IMAGE_VERSION: '5.6'
+    image: quay.io/continuouspipe/php5.6-nginx:latest
+    depends_on:
+      - php56
+
+  postgres94:
+    build:
+      context: ./postgres/
+      args:
+        FROM_TAG: '9.4'
+    image: quay.io/continuouspipe/postgres9.4:latest
+    depends_on:
+      - external_postgres94
+
+  postgres96:
+    build:
+      context: ./postgres/
+      args:
+        FROM_TAG: '9.6'
+    image: quay.io/continuouspipe/postgres9.6:latest
+    depends_on:
+      - external_postgres96
+
+  scala_sbt:
+    build:
+      context: ./scala-base/1.0/
+    image: quay.io/continuouspipe/scala-base:latest
+    depends_on:
+      - ubuntu
+
+  redis:
+    build:
+      context: ./redis/3.2/
+    image: quay.io/continuouspipe/redis3:latest
+    depends_on:
+      - external_redis
+
+  solr_4_10:
+    build:
+      context: ./solr/4.10/
+    image: quay.io/continuouspipe/solr4:latest
+    depends_on:
+      - external_solr_4_10
+
+  solr_6_2:
+    build:
+      context: ./solr/6.2/
+    image: quay.io/continuouspipe/solr6:latest
+    depends_on:
+      - external_solr_6_2
+
+  ssh_forward:
+    build:
+      context: ./ssh-forward/
+    image: quay.io/continuouspipe/ssh-forward:latest
+    ports:
+      - '2222:22'
+    depends_on:
+      - ubuntu
+
+  spryker_php71_nginx:
+    build:
+      context: ./spryker/
+      args:
+        PHP_VERSION: '7.1'
+        WEB_SERVER: nginx
+    image: quay.io/continuouspipe/spryker-php7.1-nginx:latest
+    depends_on:
+      - php71_nginx
+
+  spryker_php71_apache:
+    build:
+      context: ./spryker/
+      args:
+        PHP_VERSION: '7.1'
+        WEB_SERVER: apache
+    image: quay.io/continuouspipe/spryker-php7.1-apache:latest
+    depends_on:
+      - php71_apache
+
+  spryker_php72_nginx:
+    build:
+      context: ./spryker/
+      args:
+        PHP_VERSION: '7.2'
+        WEB_SERVER: nginx
+    image: quay.io/continuouspipe/spryker-php7.2-nginx:latest
+    depends_on:
+      - php72_nginx
+
+  spryker_php72_apache:
+    build:
+      context: ./spryker/
+      args:
+        PHP_VERSION: '7.2'
+        WEB_SERVER: apache
+    image: quay.io/continuouspipe/spryker-php7.2-apache:latest
+    depends_on:
+      - php72_apache
+
+  spryker_php73_nginx:
+    build:
+      context: ./spryker/
+      args:
+        PHP_VERSION: '7.3'
+        WEB_SERVER: nginx
+    image: quay.io/continuouspipe/spryker-php7.3-nginx:latest
+    depends_on:
+      - php73_nginx
+
+  spryker_php73_apache:
+    build:
+      context: ./spryker/
+      args:
+        PHP_VERSION: '7.3'
+        WEB_SERVER: apache
+    image: quay.io/continuouspipe/spryker-php7.3-apache:latest
+    depends_on:
+      - php73_apache
+
+  symfony_php72_nginx:
+    build:
+      context: ./symfony/
+      args:
+        PHP_VERSION: '7.2'
+        WEB_SERVER: nginx
+    image: quay.io/continuouspipe/symfony-php7.2-nginx:latest
+    depends_on:
+      - php72_nginx
+
+  symfony_php71_nginx:
+    build:
+      context: ./symfony/
+      args:
+        PHP_VERSION: '7.1'
+        WEB_SERVER: nginx
+    image: quay.io/continuouspipe/symfony-php7.1-nginx:latest
+    depends_on:
+      - php71_nginx
+
+  symfony_php70_nginx:
+    build:
+      context: ./symfony/
+      args:
+        PHP_VERSION: '7'
+        WEB_SERVER: nginx
+    image: quay.io/continuouspipe/symfony-php7-nginx:latest
+    depends_on:
+      - php70_nginx
+
+  symfony_php56_nginx:
+    build:
+      context: ./symfony/
+      args:
+        PHP_VERSION: '5.6'
+        WEB_SERVER: nginx
+    image: quay.io/continuouspipe/symfony-php5.6-nginx:latest
+    depends_on:
+      - php56_nginx
+
+  symfony_php72_apache:
+    build:
+      context: ./symfony/
+      args:
+        PHP_VERSION: '7.2'
+        WEB_SERVER: apache
+    image: quay.io/continuouspipe/symfony-php7.2-apache:latest
+    depends_on:
+      - php72_apache
+
+  symfony_php71_apache:
+    build:
+      context: ./symfony/
+      args:
+        PHP_VERSION: '7.1'
+        WEB_SERVER: apache
+    image: quay.io/continuouspipe/symfony-php7.1-apache:latest
+    depends_on:
+      - php71_apache
+
+  symfony_php70_apache:
+    build:
+      context: ./symfony/
+      args:
+        PHP_VERSION: '7'
+        WEB_SERVER: apache
+    image: quay.io/continuouspipe/symfony-php7-apache:latest
+    depends_on:
+      - php70_apache
+
+  symfony_php56_apache:
+    build:
+      context: ./symfony/
+      args:
+        PHP_VERSION: '5.6'
+        WEB_SERVER: apache
+    image: quay.io/continuouspipe/symfony-php5.6-apache:latest
+    depends_on:
+      - php56_apache
+
+  symfony_pack:
+    build:
+      context: ./symfony-pack/
+    image: quay.io/continuouspipe/symfony-pack:latest
+    depends_on:
+      - symfony_php71_nginx
+
+  tideways:
+    build:
+      context: ./tideways/
+    image: quay.io/continuouspipe/tideways:latest
+    depends_on:
+      - ubuntu
+
+  rabbitmq37_management:
+    build:
+      context: ./rabbitmq/
+      args:
+        FROM_TAG: '3.7-management'
+    image: quay.io/continuouspipe/rabbitmq37-management:latest
+    depends_on:
+      - external_rabbitmq37_management
+
+  rabbitmq36_management:
+    build:
+      context: ./rabbitmq/
+      args:
+        FROM_TAG: '3.6-management'
+    image: quay.io/continuouspipe/rabbitmq36-management:latest
+    depends_on:
+      - external_rabbitmq36_management
+
+  ubuntu:
+    build:
+      context: ./ubuntu/16.04/
+    image: quay.io/continuouspipe/ubuntu16.04:latest
+    depends_on:
+      - external_ubuntu
+
+  varnish:
+    build:
+      context: ./varnish/4.0/
+    image: quay.io/continuouspipe/varnish4:latest
+    depends_on:
+      - ubuntu
+
+  external_couchdb16:
+    image: couchdb:1.6
+
+  external_mongodb34:
+    image: mongo:3.4
+
+  external_mongodb36:
+    image: mongo:3.6
+
+  external_mysql80:
+    image: mysql:8.0
+
+  external_mysql57:
+    image: mysql:5.7
+
+  external_mysql56:
+    image: mysql:5.6
+
+  external_mysql55:
+    image: mysql:5.5
+
+  external_nginx_ingress_controller:
+    image: gcr.io/google-containers/nginx-ingress-controller:0.9.0-beta.5
+
+  external_rabbitmq37_management:
+    image: rabbitmq:3.7-management
+
+  external_rabbitmq36_management:
+    image: rabbitmq:3.6-management
+
+  external_redis:
+    image: redis:3.2
+
+  external_elasticsearch17:
+    image: elasticsearch:1.7
+
+  external_elasticsearch24:
+    image: elasticsearch:2.4
+
+  external_elasticsearch55:
+    image: elasticsearch:5.5
+
+  external_elasticsearch56:
+    image: elasticsearch:5.6
+
+  external_postgres94:
+    image: postgres:9.4
+
+  external_postgres96:
+    image: postgres:9.6
+
+  external_solr_4_10:
+    image: makuk66/docker-solr:4.10.4
+
+  external_solr_6_2:
+    image: solr:6.2
+
+  external_ubuntu:
+    image: ubuntu:16.04
