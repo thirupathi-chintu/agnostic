@@ -1,0 +1,63 @@
+#!/bin/bash
+
+export IMAGE_VERSION=${IMAGE_VERSION:-1}
+
+export APPLICATION_ENV=${APPLICATION_ENV:-production}
+export SPRYKER_CRON_COMMANDS=${SPRYKER_CRON_COMMANDS:-mailqueue:registration:send,oms:check-condition,oms:check-timeout,oms:clear-locks}
+
+# We need development dependencies for "vendor/bin/console setup:deploy:prepare-propel"
+export COMPOSER_INSTALL_FLAGS=${COMPOSER_INSTALL_FLAGS:-"--no-interaction --optimize-autoloader"}
+
+export DATABASE_PLATFORM=${DATABASE_PLATFORM:-postgres}
+export DATABASE_HOST=${DATABASE_HOST:-postgres}
+export DATABASE_USER=${DATABASE_USER:-spryker}
+export DATABASE_PASSWORD=${DATABASE_PASSWORD:-spryker}
+export DATABASE_NAME=${DATABASE_NAME:-spryker}
+
+deprecate_env_var ELASTICSEARCH_HOST_PORT ELASTICSEARCH_PORT
+
+export ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-elasticsearch}
+ELASTICSEARCH_PORT="$(canonical_port "${ELASTICSEARCH_PORT:-9200}")"
+export ELASTICSEARCH_PORT
+
+export IMPORT_DEMO_DATA_COMMAND=${IMPORT_DEMO_DATA_COMMAND:-data:import}
+
+export PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT:-256M}
+export PHP_OPCACHE_MAX_ACCELERATED_FILES=${PHP_OPCACHE_MAX_ACCELERATED_FILES:-20000}
+export PHP_REALPATH_CACHE_SIZE=${PHP_REALPATH_CACHE_SIZE:-4096K}
+export PHP_REALPATH_CACHE_TTL=${PHP_REALPATH_CACHE_TTL:-600}
+
+deprecate_env_var REDIS_HOST_PORT REDIS_PORT
+
+export REDIS_HOST=${REDIS_HOST:-redis}
+REDIS_PORT="$(canonical_port "${REDIS_PORT:-6379}")"
+export REDIS_PORT
+export MAILCATCHER_HOST=${MAILCATCHER_HOST:-mailcatcher}
+MAILCATCHER_PORT="$(canonical_port "${MAILCATCHER_PORT:-1080}")"
+export MAILCATCHER_PORT
+
+export YVES_HOST=${YVES_HOST:-yves}
+export YVES_HOST_PROTOCOL=${YVES_HOST_PROTOCOL:-https://}
+export ZED_HOST=${ZED_HOST:-zed}
+export ZED_HOST_PROTOCOL=${ZED_HOST_PROTOCOL:-https://}
+
+YVES_SESSION_COOKIE_SECURE="$(convert_to_boolean_string "${YVES_SESSION_COOKIE_SECURE:-true}")"
+export YVES_SESSION_COOKIE_SECURE
+ZED_SESSION_COOKIE_SECURE="$(convert_to_boolean_string "${ZED_SESSION_COOKIE_SECURE:-true}")"
+export ZED_SESSION_COOKIE_SECURE
+
+export APP_ENDPOINT_STRICT=${APP_ENDPOINT_STRICT:-true}
+
+export APP_SERVICES=${APP_SERVICES:-yves zed}
+
+ZED_WEB_DEFAULT_SERVER="$(convert_to_boolean_string "${ZED_WEB_DEFAULT_SERVER:-false}")"
+export ZED_WEB_DEFAULT_SERVER
+
+export ZED_WEB_SERVER_NAME=${ZED_WEB_SERVER_NAME:-zed}
+
+export WEB_DIRECTORY=${WEB_DIRECTORY:-public}
+
+export TIDEWAYS_FRAMEWORK=${TIDEWAYS_FRAMEWORK:-symfony}
+
+SPRYKER_START_QUEUE_WORKER="$(convert_to_boolean_string "${SPRYKER_START_QUEUE_WORKER:-false}")"
+export SPRYKER_START_QUEUE_WORKER

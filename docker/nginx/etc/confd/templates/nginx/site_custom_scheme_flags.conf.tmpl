@@ -1,0 +1,17 @@
+set $custom_https $https;
+set $custom_scheme $scheme;
+
+{{ if eq "true" (getenv "WEB_HTTPS_OFFLOADED") }}
+if ($server_port = {{ getenv "WEB_HTTPS_PORT" }} ) {
+   set $custom_https on;
+   set $custom_scheme https;
+}{{ end }}
+
+{{ if eq "true" (getenv "WEB_REVERSE_PROXIED") }}
+if ($http_x_forwarded_proto) {
+    set $custom_scheme $http_x_forwarded_proto;
+}
+
+if ($http_x_forwarded_proto = https) {
+    set $custom_https on;
+}{{ end }}

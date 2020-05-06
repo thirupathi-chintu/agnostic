@@ -1,0 +1,26 @@
+# PHP entry point for main application
+location ~ ^/(index|get|static|errors/report|errors/404|errors/503|health_check)\.php$ {
+    try_files $uri =404;
+    fastcgi_pass    php-fpm;
+
+    fastcgi_param  PHP_FLAG  "session.auto_start=off \n suhosin.session.cryptua=off";
+    fastcgi_param  PHP_VALUE "memory_limit={{ getenv "PHP_MEMORY_LIMIT" }} \n max_execution_time={{ getenv "PHP_MAX_EXECUTION_TIME" }}";
+
+    fastcgi_connect_timeout {{ getenv "PHP_MAX_EXECUTION_TIME" }}s;
+    fastcgi_send_timeout {{ getenv "PHP_MAX_EXECUTION_TIME" }};
+    fastcgi_read_timeout {{ getenv "PHP_MAX_EXECUTION_TIME" }};
+    fastcgi_buffer_size 128k;
+    fastcgi_buffers 1024 4k;
+    fastcgi_busy_buffers_size 1024k;
+    fastcgi_temp_file_write_size 1024k;
+    fastcgi_param  MAGE_MODE $MAGE_MODE;
+
+    fastcgi_index  index.php;
+    fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+    fastcgi_param  HTTPS $custom_https if_not_empty;
+    include        fastcgi_params;
+
+    # Set Mage run Type and Code dynamically
+    fastcgi_param  MAGE_RUN_TYPE $MAGE_RUN_TYPE;
+    fastcgi_param  MAGE_RUN_CODE $MAGE_RUN_CODE;
+}

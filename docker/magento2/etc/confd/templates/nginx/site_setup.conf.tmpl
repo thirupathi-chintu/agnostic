@@ -1,0 +1,29 @@
+# PHP entry point for setup application
+location ~* ^/setup($|/) {
+{{ if eq "true" (getenv "MAGENTO_ALLOW_ACCESS_TO_SETUP") }}
+    root $MAGE_ROOT;
+    location ~ ^/setup/index.php {
+        fastcgi_pass   php-fpm;
+
+        fastcgi_param  PHP_FLAG  "session.auto_start=off \n suhosin.session.cryptua=off";
+        fastcgi_param  PHP_VALUE "memory_limit=756M \n max_execution_time=600";
+        fastcgi_read_timeout 600s;
+        fastcgi_connect_timeout 600s;
+
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        fastcgi_param  HTTPS $custom_https if_not_empty;
+        include        fastcgi_params;
+    }
+
+    location ~ ^/setup/(?!pub/). {
+        deny all;
+    }
+
+    location ~ ^/setup/pub/ {
+        add_header X-Frame-Options "SAMEORIGIN";
+    }
+{{ else }}
+    deny all;
+{{ end }}
+}

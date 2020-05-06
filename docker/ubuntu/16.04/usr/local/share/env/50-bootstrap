@@ -1,0 +1,41 @@
+#!/bin/bash
+
+export WORK_DIRECTORY=${WORK_DIRECTORY:-/app}
+export CODE_OWNER=${CODE_OWNER:-build}
+export CODE_GROUP=${CODE_GROUP:-build}
+
+START_CRON=${START_CRON:-false}
+START_CRON="$(convert_to_boolean_string "$START_CRON")"
+export START_CRON
+
+if [[ "$CRON_MODE" = "ofelia" ]]; then
+    CRON_COMMAND=${CRON_COMMAND:-/usr/bin/ofelia daemon --config /etc/ofelia/config.ini}
+fi
+export CRON_COMMAND=${CRON_COMMAND:-/usr/sbin/cron -f}
+
+IS_CHOWN_FORBIDDEN="$(run_return_boolean is_chown_forbidden)"
+export IS_CHOWN_FORBIDDEN
+
+IS_VBOXSF_MOUNTPOINT="$(run_return_boolean is_vboxsf_mountpoint)"
+export IS_VBOXSF_MOUNTPOINT
+
+IS_APP_MOUNTPOINT="$(run_return_boolean is_app_mountpoint)"
+export IS_APP_MOUNTPOINT
+
+DEVELOPMENT_MODE="$(convert_to_boolean_string_zero_is_true "${DEVELOPMENT_MODE:-${IS_APP_MOUNTPOINT}}")"
+export DEVELOPMENT_MODE
+
+RUN_BUILD="$(convert_to_boolean_string "${RUN_BUILD:-true}")"
+export RUN_BUILD
+
+APP_USER_LOCAL="$(convert_to_boolean_string "${APP_USER_LOCAL:-${IS_VBOXSF_MOUNTPOINT}}")"
+export APP_USER_LOCAL
+
+APP_USER_LOCAL_RANDOM="$(convert_to_boolean_string "${APP_USER_LOCAL_RANDOM:-false}")"
+export APP_USER_LOCAL_RANDOM
+
+export BUILD_USER_SSH_PRIVATE_KEY=${BUILD_USER_SSH_PRIVATE_KEY:-}
+export BUILD_USER_SSH_PUBLIC_KEY=${BUILD_USER_SSH_PUBLIC_KEY:-}
+export BUILD_USER_SSH_KNOWN_HOSTS=${BUILD_USER_SSH_KNOWN_HOSTS:-}
+
+export PARALLEL_SHELL="/usr/local/share/bootstrap/parallel_shell_wrapper.sh"
